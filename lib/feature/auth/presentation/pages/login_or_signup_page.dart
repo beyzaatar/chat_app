@@ -24,7 +24,7 @@ class LoginOrSignUpPage extends StatelessWidget {
               ),
               const Spacer(),
               ElevatedButton(
-                onPressed: () => context.go('/sign-in'),
+                onPressed: () => context.push('/sign-in'),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: colors.primaryButton,
@@ -36,7 +36,7 @@ class LoginOrSignUpPage extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.push('/sign-up'),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   foregroundColor: Colors.white,

@@ -2,10 +2,10 @@ import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SignInPage extends StatelessWidget {
+class SignUpPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
-  SignInPage({super.key});
+  SignUpPage({super.key});
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
@@ -18,17 +18,18 @@ class SignInPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
-                  SizedBox(height: constraints.maxHeight * 0.1),
+                  SizedBox(height: constraints.maxHeight * 0.08),
                   Image.asset(
                     'assets/images/daphne_color_icon.png',
                     width: 160,
                     height: 160,
                   ),
-                  SizedBox(height: constraints.maxHeight * 0.1),
+                  SizedBox(height: constraints.maxHeight * 0.08),
                   Text(
-                    "Giriş Yap",
+                    "Kayıt Ol",
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: colors.textPrimary,
                     ),
                   ),
                   SizedBox(height: constraints.maxHeight * 0.05),
@@ -36,6 +37,27 @@ class SignInPage extends StatelessWidget {
                     key: _formKey,
                     child: Column(
                       children: [
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'İsim Soyisim',
+                            filled: true,
+                            fillColor: colors.inputBackground,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0 * 1.5,
+                              vertical: 16.0,
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50),
+                              ),
+                            ),
+                          ),
+                          onSaved: (name) {
+                            // Save it
+                          },
+                        ),
+                        const SizedBox(height: 16.0),
                         TextFormField(
                           decoration: InputDecoration(
                             hintText: 'Telefon Numarası',
@@ -60,7 +82,6 @@ class SignInPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: TextFormField(
-                            obscureText: true,
                             decoration: InputDecoration(
                               hintText: 'Şifre',
                               filled: true,
@@ -76,50 +97,38 @@ class SignInPage extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            obscureText: true,
                             onSaved: (passaword) {
                               // Save it
                             },
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              // Navigate to the main screen
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: colors.primaryButton,
-                            foregroundColor: colors.buttonText,
-                            minimumSize: const Size(double.infinity, 48),
-                            shape: const StadiumBorder(),
-                          ),
-                          child: const Text("Giriş Yap"),
-                        ),
-                        const SizedBox(height: 16.0),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Şifremi Unuttum?',
-                            style: Theme.of(context).textTheme.bodyMedium!
-                                .copyWith(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .color!
-                                      .withValues(alpha: 0.64),
-                                ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: colors.primaryButton,
+                              foregroundColor: colors.buttonText,
+                              minimumSize: const Size(double.infinity, 48),
+                              shape: const StadiumBorder(),
+                            ),
+                            child: const Text("Kayıt Ol"),
                           ),
                         ),
                         TextButton(
-                          onPressed: () => context.push('/sign-up'),
+                          onPressed: () => context.push('/sign-in'),
                           child: Text.rich(
                             TextSpan(
-                              text: "Hesabınız yok mu? ",
+                              text: "Zaten bir hesabınız var mı? ",
                               children: [
                                 TextSpan(
-                                  text: "Kayıt Ol",
+                                  text: "Giriş Yap",
                                   style: TextStyle(
                                     color: colors.secondaryButton,
                                   ),
@@ -148,3 +157,17 @@ class SignInPage extends StatelessWidget {
     );
   }
 }
+
+// only for demo
+List<DropdownMenuItem<String>>? countries =
+    [
+      "Bangladesh",
+      "Switzerland",
+      'Canada',
+      'Japan',
+      'Germany',
+      'Australia',
+      'Sweden',
+    ].map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(value: value, child: Text(value));
+    }).toList();
