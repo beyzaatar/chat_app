@@ -1,4 +1,5 @@
 import 'package:chat_app/core/widgets/splash_screen.dart';
+import 'package:chat_app/feature/auth/presentation/pages/forgot_password.dart';
 import 'package:chat_app/feature/auth/presentation/pages/login_or_signup_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_in_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_up_page.dart';
@@ -16,6 +17,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/sign-in', builder: (context, state) => SignInPage()),
       GoRoute(path: '/sign-up', builder: (context, state) => SignUpPage()),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => ForgotPasswordPage(),
+      ),
     ],
   );
 });

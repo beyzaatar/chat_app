@@ -99,7 +99,7 @@ class SignInPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 16.0),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () => context.push('/forgot-password'),
                           child: Text(
                             'Şifremi Unuttum?',
                             style: Theme.of(context).textTheme.bodyMedium!
