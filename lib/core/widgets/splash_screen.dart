@@ -1,6 +1,7 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -27,6 +28,8 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
     if (!mounted) return;
 
+    context.go('/login-or-signup');
+
     // Token kontrol et
     //final authState = ref.read(authNotifierProvider);
 
@@ -44,8 +47,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppColors>()!;
+
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: colors.primaryButton,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
