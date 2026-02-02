@@ -1,5 +1,6 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginOrSignUpPage extends StatelessWidget {
   const LoginOrSignUpPage({super.key});
@@ -23,7 +24,7 @@ class LoginOrSignUpPage extends StatelessWidget {
               ),
               const Spacer(),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.go('/sign-in'),
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: colors.primaryButton,
