@@ -6,6 +6,7 @@ import 'package:chat_app/feature/auth/presentation/pages/login_or_signup_page.da
 import 'package:chat_app/feature/auth/presentation/pages/sign_in_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_up_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart';
+import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -36,6 +37,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/changed-password',
         builder: (context, state) => const ChangedPasswordPage(),
       ),
+      GoRoute(path: '/chats', builder: (context, state) => const ChatsPage()),
     ],
   );
 });

@@ -109,11 +109,11 @@ class LogoWithTitle extends StatelessWidget {
   final List<Widget> children;
 
   const LogoWithTitle({
-    Key? key,
+    super.key,
     required this.title,
     this.subText = '',
     required this.children,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return SafeArea(
