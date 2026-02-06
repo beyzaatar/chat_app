@@ -87,7 +87,7 @@ class SignInPage extends StatelessWidget {
                               _formKey.currentState!.save();
                               // Navigate to the main screen
                             }
-                            context.go('/chats');
+                            context.go('/entry-point');
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
