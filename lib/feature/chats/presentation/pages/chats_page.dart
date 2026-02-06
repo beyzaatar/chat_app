@@ -1,5 +1,6 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../data/models/chat_model.dart';
 import '../widgets/chat_card.dart';
 import '../widgets/fill_outline_button.dart';
@@ -20,7 +21,15 @@ class ChatsPage extends StatelessWidget {
         foregroundColor: colors.buttonText,
         automaticallyImplyLeading: false,
         title: Text("Sohbetler", style: TextStyle(color: colors.buttonText)),
-        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            color: colors.buttonText,
+            onPressed: () {
+              context.push("/message-search");
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -29,16 +38,9 @@ class ChatsPage extends StatelessWidget {
             color: colors.primaryButton,
             child: Row(
               children: [
-                FillOutlineButton(
-                  press: () {},
-                  text: "Son Mesajlar",
-                ),
+                FillOutlineButton(press: () {}, text: "Son Mesajlar"),
                 const SizedBox(width: 16.0),
-                FillOutlineButton(
-                  press: () {},
-                  text: "Aktif",
-                  isFilled: false,
-                ),
+                FillOutlineButton(press: () {}, text: "Aktif", isFilled: false),
               ],
             ),
           ),

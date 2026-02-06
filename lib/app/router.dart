@@ -7,6 +7,7 @@ import 'package:chat_app/feature/auth/presentation/pages/sign_in_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_up_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
+import 'package:chat_app/feature/chats/presentation/pages/message_search_page.dart';
 import 'package:chat_app/feature/entrypoint/presentation/pages/entrypoint_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -42,6 +43,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/entry-point',
         builder: (context, state) => EntryPointUI(),
+      ),
+      GoRoute(
+        path: '/message-search',
+        builder: (context, state) => const MessageSearchPage(),
       ),
     ],
   );
