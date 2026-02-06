@@ -1,5 +1,6 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -45,6 +46,7 @@ class ForgotPasswordPage extends StatelessWidget {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
               }
+              context.go('/verification');
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
