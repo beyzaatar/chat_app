@@ -9,6 +9,7 @@ import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart'
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/message_search_page.dart';
 import 'package:chat_app/feature/entrypoint/presentation/pages/entrypoint_ui.dart';
+import 'package:chat_app/feature/messages/presentation/pages/messages_pages.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,6 +48,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/message-search',
         builder: (context, state) => const MessageSearchPage(),
+      ),
+      GoRoute(
+        path: '/messages',
+        builder: (context, state) => const MessagesPages(),
       ),
     ],
   );
