@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/feature/auth/application/state/auth_state.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,10 +30,10 @@ class AuthNotifier extends StateNotifier<AppAuthState> {
         token: otp,
         type: OtpType.email,
       );
-      print('verifyOtp response: ${response.session}');
+      log('verifyOtp response: ${response.session}');
       state = state.copyWith(status: AuthStatus.success);
     } catch (e) {
-      print('verifyOtp error: $e');
+      log('verifyOtp error: $e');
       state = state.copyWith(
         status: AuthStatus.error,
         errorMessage: e.toString(),
