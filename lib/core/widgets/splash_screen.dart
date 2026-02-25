@@ -2,6 +2,7 @@ import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -18,31 +19,17 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   }
 
   Future<void> _checkAuthStatus() async {
-    // Önce getSignedInUser() çağrı - storage'dan bilgileri yükle
-    //await ref.read(authNotifierProvider.notifier).getSignedInUser();
-
-    if (!mounted) return;
-
-    // Biraz bekleme süresi ekle (loading görseli göstersin diye)
     await Future.delayed(const Duration(milliseconds: 800));
 
     if (!mounted) return;
 
-    context.go('/login-or-signup');
+    final session = Supabase.instance.client.auth.currentSession;
 
-    // Token kontrol et
-    //final authState = ref.read(authNotifierProvider);
-
-    //authState.userToken.fold(
-    // Token yoksa giriş sayfasına git
-    // () {
-    //   router.go('/sign-in');
-    // },
-    // Token varsa anasayfaya git
-    //   (token) {
-    //     router.go('/home');
-    //   },
-    // );
+    if (session != null) {
+      context.go('/entry-point');
+    } else {
+      context.go('/login-with-email');
+    }
   }
 
   @override

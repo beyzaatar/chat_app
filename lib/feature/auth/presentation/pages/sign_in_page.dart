@@ -1,14 +1,16 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
   SignInPage({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).extension<AppColors>()!;
+
     return Scaffold(
       backgroundColor: colors.scaffoldBackground,
       body: SafeArea(
@@ -76,7 +78,7 @@ class SignInPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            onSaved: (passaword) {
+                            onSaved: (password) {
                               // Save it
                             },
                           ),

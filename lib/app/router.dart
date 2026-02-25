@@ -3,9 +3,11 @@ import 'package:chat_app/feature/auth/presentation/pages/change_password_page.da
 import 'package:chat_app/feature/auth/presentation/pages/changed_password_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/forgot_password_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/login_or_signup_page.dart';
+import 'package:chat_app/feature/auth/presentation/pages/login_with_email.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_in_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_up_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart';
+import 'package:chat_app/feature/call/presentation/pages/audio_call_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/message_search_page.dart';
 import 'package:chat_app/feature/entrypoint/presentation/pages/entrypoint_ui.dart';
@@ -23,6 +25,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const LoginOrSignUpPage(),
       ),
       GoRoute(path: '/sign-in', builder: (context, state) => SignInPage()),
+      GoRoute(
+        path: '/login-with-email',
+        builder: (context, state) => LoginWithEmail(),
+      ),
       GoRoute(path: '/sign-up', builder: (context, state) => SignUpPage()),
       GoRoute(
         path: '/forgot-password',
@@ -30,7 +36,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/verification',
-        builder: (context, state) => const VerificationPage(),
+        builder: (context, state) {
+          final email = state.extra as String;
+          return VerificationPage(email: email);
+        },
       ),
       GoRoute(
         path: '/change-password',
@@ -52,6 +61,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/messages',
         builder: (context, state) => const MessagesPages(),
+      ),
+      GoRoute(
+        path: '/audio-call',
+        builder: (context, state) => const AudioCallingPage(),
       ),
     ],
   );

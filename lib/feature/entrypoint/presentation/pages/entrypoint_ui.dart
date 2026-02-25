@@ -23,13 +23,12 @@ class _EntryPointUIState extends State<EntryPointUI> {
     setState(() {});
   }
 
-  /// All the pages
+  /// All the pages (add placeholders for missing pages)
   List<Widget> pages = [
     const ChatsPage(),
-    //const MenuPage(),
-    //const CartPage(isHomePage: true),
-    //const SavePage(isHomePage: false),
-    //const ProfilePage(),
+    Center(child: Text('Kişiler')), // Placeholder for Contacts
+    Center(child: Text('Aramalar')), // Placeholder for Calls
+    Center(child: Text('Profil')), // Placeholder for Profile
   ];
 
   @override
