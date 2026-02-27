@@ -1,7 +1,7 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../data/models/message_model.dart';
+import '../../../messages/data/models/message_model.dart';
 import '../widgets/message.dart';
 import '../widgets/chat_input_field.dart';
 

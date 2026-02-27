@@ -1,6 +1,6 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import '../../data/models/message_model.dart';
+import '../../../messages/data/models/message_model.dart';
 
 class AudioMessage extends StatelessWidget {
   final ChatMessage? message;

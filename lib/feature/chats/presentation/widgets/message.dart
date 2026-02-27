@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/message_model.dart';
+import '../../../messages/data/models/message_model.dart';
 import 'text_message.dart';
 import 'audio_message.dart';
 import 'video_message.dart';
