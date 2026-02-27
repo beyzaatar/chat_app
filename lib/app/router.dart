@@ -11,7 +11,7 @@ import 'package:chat_app/feature/call/presentation/pages/audio_call_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/message_search_page.dart';
 import 'package:chat_app/feature/entrypoint/presentation/pages/entrypoint_ui.dart';
-import 'package:chat_app/feature/chats/presentation/pages/messages_pages.dart';
+import 'package:chat_app/feature/chats/presentation/pages/messages_page.dart';
 import 'package:chat_app/feature/settings/presentation/pages/settings_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -64,7 +64,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/messages',
-        builder: (context, state) => const MessagesPages(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return MessagesPage(
+            conversationId: extra['conversationId'],
+            otherUserName: extra['otherUserName'],
+            otherUserAvatar: extra['otherUserAvatar'] ?? '',
+          );
+        },
       ),
       GoRoute(
         path: '/audio-call',

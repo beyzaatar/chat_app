@@ -7,17 +7,23 @@ class ChatRepository {
 
   String get currentUserId => _supabase.auth.currentUser!.id;
 
-  // Konuşmaları getir
-  Future<List<ConversationModel>> getConversations() async {
+  // Konuşmaları ve profil bilgilerini getir
+  Future<List<Map<String, dynamic>>> getConversationsWithProfiles() async {
     final response = await _supabase
         .from('conversations')
-        .select()
+        .select('''
+        *,
+        participant1_profile:profiles!conversations_participant_1_fkey(
+          id, full_name, avatar_url
+        ),
+        participant2_profile:profiles!conversations_participant_2_fkey(
+          id, full_name, avatar_url
+        )
+      ''')
         .or('participant_1.eq.$currentUserId,participant_2.eq.$currentUserId')
         .order('last_message_at', ascending: false);
 
-    return (response as List)
-        .map((json) => ConversationModel.fromJson(json))
-        .toList();
+    return List<Map<String, dynamic>>.from(response);
   }
 
   // Konuşma oluştur veya mevcutsa getir

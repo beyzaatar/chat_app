@@ -6,12 +6,14 @@ enum ChatStatus { initial, loading, success, error }
 class ChatState {
   final ChatStatus status;
   final List<ConversationModel> conversations;
+  final List<Map<String, dynamic>> conversationsWithProfiles;
   final List<MessageModel> messages;
   final String? errorMessage;
 
   const ChatState({
     this.status = ChatStatus.initial,
     this.conversations = const [],
+    this.conversationsWithProfiles = const [],
     this.messages = const [],
     this.errorMessage,
   });
@@ -19,12 +21,15 @@ class ChatState {
   ChatState copyWith({
     ChatStatus? status,
     List<ConversationModel>? conversations,
+    List<Map<String, dynamic>>? conversationsWithProfiles,
     List<MessageModel>? messages,
     String? errorMessage,
   }) {
     return ChatState(
       status: status ?? this.status,
       conversations: conversations ?? this.conversations,
+      conversationsWithProfiles:
+          conversationsWithProfiles ?? this.conversationsWithProfiles,
       messages: messages ?? this.messages,
       errorMessage: errorMessage ?? this.errorMessage,
     );

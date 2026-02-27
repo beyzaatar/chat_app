@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../data/models/chat_model.dart';
 import 'circle_avatar_with_active_indicator.dart';
 
 class ChatCard extends StatelessWidget {
-  const ChatCard({super.key, required this.chat, required this.press});
+  const ChatCard({
+    super.key,
+    required this.name,
+    required this.lastMessage,
+    required this.avatarUrl,
+    required this.time,
+    required this.press,
+    this.isActive = false,
+  });
 
-  final Chat chat;
+  final String name, lastMessage, avatarUrl, time;
+  final bool isActive;
   final VoidCallback press;
 
   @override
@@ -20,8 +28,8 @@ class ChatCard extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatarWithActiveIndicator(
-              image: chat.image,
-              isActive: chat.isActive,
+              image: avatarUrl,
+              isActive: isActive,
             ),
             Expanded(
               child: Padding(
@@ -30,7 +38,7 @@ class ChatCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      chat.name,
+                      name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -40,7 +48,7 @@ class ChatCard extends StatelessWidget {
                     Opacity(
                       opacity: 0.64,
                       child: Text(
-                        chat.lastMessage,
+                        lastMessage,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -49,7 +57,7 @@ class ChatCard extends StatelessWidget {
                 ),
               ),
             ),
-            Opacity(opacity: 0.64, child: Text(chat.time)),
+            Opacity(opacity: 0.64, child: Text(time)),
           ],
         ),
       ),

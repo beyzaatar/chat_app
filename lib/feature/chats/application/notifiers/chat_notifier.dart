@@ -12,10 +12,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
   Future<void> loadConversations() async {
     state = state.copyWith(status: ChatStatus.loading);
     try {
-      final conversations = await _repository.getConversations();
+      final conversations = await _repository.getConversationsWithProfiles();
       state = state.copyWith(
         status: ChatStatus.success,
-        conversations: conversations,
+        conversationsWithProfiles: conversations,
       );
     } catch (e) {
       state = state.copyWith(
