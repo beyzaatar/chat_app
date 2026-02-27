@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/feature/auth/application/providers/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,10 +26,20 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
     final session = Supabase.instance.client.auth.currentSession;
 
-    if (session != null) {
+    if (session == null) {
+      context.go('/login-with-email');
+      return;
+    }
+
+    final hasProfile = await ref
+        .read(authNotifierProvider.notifier)
+        .hasProfile();
+    if (!mounted) return;
+
+    if (hasProfile) {
       context.go('/entry-point');
     } else {
-      context.go('/login-with-email');
+      context.go('/onboarding');
     }
   }
 

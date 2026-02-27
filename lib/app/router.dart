@@ -5,7 +5,7 @@ import 'package:chat_app/feature/auth/presentation/pages/forgot_password_page.da
 import 'package:chat_app/feature/auth/presentation/pages/login_or_signup_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/login_with_email.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_in_page.dart';
-import 'package:chat_app/feature/auth/presentation/pages/sign_up_page.dart';
+import 'package:chat_app/feature/auth/presentation/pages/onboarding_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart';
 import 'package:chat_app/feature/call/presentation/pages/audio_call_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
@@ -30,7 +30,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/login-with-email',
         builder: (context, state) => LoginWithEmail(),
       ),
-      GoRoute(path: '/sign-up', builder: (context, state) => SignUpPage()),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingPage(),
+      ),
       GoRoute(
         path: '/forgot-password',
         builder: (context, state) => ForgotPasswordPage(),

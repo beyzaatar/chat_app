@@ -48,7 +48,15 @@ class VerificationPageState extends ConsumerState<VerificationPage> {
 
     final authState = ref.read(authNotifierProvider);
     if (authState.status == AuthStatus.success) {
-      context.go('/entry-point');
+      final hasProfile = await ref
+          .read(authNotifierProvider.notifier)
+          .hasProfile();
+      if (!mounted) return;
+      if (hasProfile) {
+        context.go('/entry-point');
+      } else {
+        context.go('/onboarding');
+      }
     } else if (authState.status == AuthStatus.error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(authState.errorMessage ?? 'Geçersiz kod')),
