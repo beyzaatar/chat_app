@@ -13,3 +13,7 @@ class AppAuthState {
     );
   }
 }
+
+// initial → henüz bir şey olmadı,
+// loading → Supabasee istek gitti bekliyoruz,
+// success → işlem başarılı, error → bir şeyler ters gitti.

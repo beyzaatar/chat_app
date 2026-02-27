@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -26,7 +27,9 @@ class ProfilePage extends StatelessWidget {
               Icons.settings_outlined,
               color: theme.colorScheme.onPrimary,
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.push('/settings');
+            },
           ),
         ],
       ),

@@ -5,6 +5,7 @@ import 'package:chat_app/feature/auth/presentation/pages/change_password_page.da
 import 'package:chat_app/feature/auth/presentation/widgets/otp_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class VerificationPage extends ConsumerStatefulWidget {
   final String email;
@@ -34,7 +35,7 @@ class VerificationPageState extends ConsumerState<VerificationPage> {
   Future<void> _verifyOtp() async {
     if (_otpCode.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen 6 haneli kodu giriniz.')),
+        const SnackBar(content: Text('Lütfen 6 haneli kodu giriniz')),
       );
       return;
     }
@@ -43,10 +44,14 @@ class VerificationPageState extends ConsumerState<VerificationPage> {
         .read(authNotifierProvider.notifier)
         .verifyOtp(widget.email, _otpCode);
 
+    if (!mounted) return;
+
     final authState = ref.read(authNotifierProvider);
-    if (authState.status == AuthStatus.success && mounted) {
+    if (authState.status == AuthStatus.success) {
+      context.go('/entry-point');
+    } else if (authState.status == AuthStatus.error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authState.errorMessage ?? 'Geçersiz Kod')),
+        SnackBar(content: Text(authState.errorMessage ?? 'Geçersiz kod')),
       );
     }
   }
