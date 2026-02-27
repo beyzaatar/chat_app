@@ -28,8 +28,12 @@ class ChatNotifier extends StateNotifier<ChatState> {
   // Konuşma oluştur veya mevcutsa getir
   Future<ConversationModel?> getOrCreateConversation(String otherUserId) async {
     try {
-      return await _repository.getOrCreateConversation(otherUserId);
+      final conversation = await _repository.getOrCreateConversation(
+        otherUserId,
+      );
+      return conversation;
     } catch (e) {
+      print('getOrCreateConversation error: $e');
       state = state.copyWith(
         status: ChatStatus.error,
         errorMessage: e.toString(),
@@ -60,6 +64,26 @@ class ChatNotifier extends StateNotifier<ChatState> {
   Future<void> markAsRead(String conversationId) async {
     try {
       await _repository.markAsRead(conversationId);
+    } catch (e) {
+      state = state.copyWith(
+        status: ChatStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> searchUsers(String query) async {
+    if (query.isEmpty) {
+      state = state.copyWith(searchResults: []);
+      return;
+    }
+    state = state.copyWith(status: ChatStatus.loading);
+    try {
+      final results = await _repository.searchUsers(query);
+      state = state.copyWith(
+        status: ChatStatus.success,
+        searchResults: results,
+      );
     } catch (e) {
       state = state.copyWith(
         status: ChatStatus.error,

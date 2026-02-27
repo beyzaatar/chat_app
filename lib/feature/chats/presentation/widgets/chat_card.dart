@@ -28,7 +28,7 @@ class ChatCard extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatarWithActiveIndicator(
-              image: avatarUrl,
+              image: avatarUrl.isNotEmpty ? avatarUrl : null,
               isActive: isActive,
             ),
             Expanded(

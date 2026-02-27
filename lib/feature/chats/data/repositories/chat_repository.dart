@@ -9,21 +9,29 @@ class ChatRepository {
 
   // Konuşmaları ve profil bilgilerini getir
   Future<List<Map<String, dynamic>>> getConversationsWithProfiles() async {
-    final response = await _supabase
+    final conversations = await _supabase
         .from('conversations')
-        .select('''
-        *,
-        participant1_profile:profiles!conversations_participant_1_fkey(
-          id, full_name, avatar_url
-        ),
-        participant2_profile:profiles!conversations_participant_2_fkey(
-          id, full_name, avatar_url
-        )
-      ''')
+        .select()
         .or('participant_1.eq.$currentUserId,participant_2.eq.$currentUserId')
         .order('last_message_at', ascending: false);
 
-    return List<Map<String, dynamic>>.from(response);
+    final List<Map<String, dynamic>> result = [];
+
+    for (final conversation in conversations) {
+      final otherUserId = conversation['participant_1'] == currentUserId
+          ? conversation['participant_2']
+          : conversation['participant_1'];
+
+      final profile = await _supabase
+          .from('profiles')
+          .select()
+          .eq('id', otherUserId)
+          .maybeSingle();
+
+      result.add({...conversation, 'other_user_profile': profile});
+    }
+
+    return result;
   }
 
   // Konuşma oluştur veya mevcutsa getir
@@ -91,5 +99,25 @@ class ChatRepository {
         .update({'is_read': true})
         .eq('conversation_id', conversationId)
         .neq('sender_id', currentUserId);
+  }
+
+  Future<List<Map<String, dynamic>>> searchUsers(String query) async {
+    if (query.isEmpty) {
+      final response = await _supabase
+          .from('profiles')
+          .select()
+          .neq('id', currentUserId)
+          .limit(50);
+      return List<Map<String, dynamic>>.from(response);
+    }
+
+    final response = await _supabase
+        .from('profiles')
+        .select()
+        .or('username.ilike.%$query%,full_name.ilike.%$query%')
+        .neq('id', currentUserId)
+        .limit(20);
+
+    return List<Map<String, dynamic>>.from(response);
   }
 }

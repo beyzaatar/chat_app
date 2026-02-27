@@ -8,6 +8,7 @@ class ChatState {
   final List<ConversationModel> conversations;
   final List<Map<String, dynamic>> conversationsWithProfiles;
   final List<MessageModel> messages;
+  final List<Map<String, dynamic>> searchResults;
   final String? errorMessage;
 
   const ChatState({
@@ -15,6 +16,7 @@ class ChatState {
     this.conversations = const [],
     this.conversationsWithProfiles = const [],
     this.messages = const [],
+    this.searchResults = const [],
     this.errorMessage,
   });
 
@@ -23,6 +25,7 @@ class ChatState {
     List<ConversationModel>? conversations,
     List<Map<String, dynamic>>? conversationsWithProfiles,
     List<MessageModel>? messages,
+    List<Map<String, dynamic>>? searchResults,
     String? errorMessage,
   }) {
     return ChatState(
@@ -31,6 +34,7 @@ class ChatState {
       conversationsWithProfiles:
           conversationsWithProfiles ?? this.conversationsWithProfiles,
       messages: messages ?? this.messages,
+      searchResults: searchResults ?? this.searchResults,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

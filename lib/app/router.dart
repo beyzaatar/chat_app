@@ -10,6 +10,7 @@ import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart'
 import 'package:chat_app/feature/call/presentation/pages/audio_call_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/message_search_page.dart';
+import 'package:chat_app/feature/contact/presentation/pages/contact_search_page.dart';
 import 'package:chat_app/feature/entrypoint/presentation/pages/entrypoint_ui.dart';
 import 'package:chat_app/feature/chats/presentation/pages/messages_page.dart';
 import 'package:chat_app/feature/settings/presentation/pages/settings_page.dart';
@@ -80,6 +81,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: '/contact-search',
+        builder: (context, state) => const ContactSearchPage(),
       ),
     ],
   );

@@ -6,7 +6,7 @@ class CircleAvatarWithActiveIndicator extends StatelessWidget {
     super.key,
     this.image,
     this.radius = 24,
-    this.isActive,
+    this.isActive = false,
   });
 
   final String? image;
@@ -19,8 +19,16 @@ class CircleAvatarWithActiveIndicator extends StatelessWidget {
 
     return Stack(
       children: [
-        CircleAvatar(radius: radius, backgroundImage: NetworkImage(image!)),
-        if (isActive!)
+        CircleAvatar(
+          radius: radius,
+          backgroundImage: (image != null && image!.isNotEmpty)
+              ? NetworkImage(image!)
+              : null,
+          child: (image == null || image!.isEmpty)
+              ? const Icon(Icons.person)
+              : null,
+        ),
+        if (isActive == true)
           Positioned(
             right: 0,
             bottom: 0,

@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
+import 'package:chat_app/feature/contact/presentation/pages/contact_page.dart';
 import 'package:chat_app/feature/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -27,7 +28,7 @@ class _EntryPointUIState extends State<EntryPointUI> {
   /// All the pages (add placeholders for missing pages)
   List<Widget> pages = [
     const ChatsPage(),
-    Center(child: Text('Kişiler')), // Placeholder for Contacts
+    const ContactPage(), // Placeholder for Contacts
     Center(child: Text('Aramalar')), // Placeholder for Calls
     const ProfilePage(), // Placeholder for Profile
   ];

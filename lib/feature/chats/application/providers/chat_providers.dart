@@ -2,6 +2,7 @@ import 'package:chat_app/feature/chats/data/models/message_model.dart';
 import 'package:chat_app/feature/chats/data/repositories/chat_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../notifiers/chat_notifier.dart';
 import '../state/chat_state.dart';
 
@@ -20,5 +21,12 @@ final chatNotifierProvider = StateNotifierProvider<ChatNotifier, ChatState>((
 // Realtime mesaj stream provider
 final messagesStreamProvider =
     StreamProvider.family<List<MessageModel>, String>((ref, conversationId) {
-      return ref.read(chatRepositoryProvider).getMessages(conversationId);
+      return Supabase.instance.client
+          .from('messages')
+          .stream(primaryKey: ['id'])
+          .eq('conversation_id', conversationId)
+          .order('created_at', ascending: true)
+          .map(
+            (data) => data.map((json) => MessageModel.fromJson(json)).toList(),
+          );
     });

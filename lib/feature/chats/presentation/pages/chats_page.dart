@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../data/models/chat_model.dart';
 import '../widgets/chat_card.dart';
 import '../widgets/fill_outline_button.dart';
 
@@ -26,19 +25,11 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
   }
 
   String _getOtherParticipantName(Map<String, dynamic> conversation) {
-    final currentUserId = Supabase.instance.client.auth.currentUser!.id;
-    if (conversation['participant_1'] == currentUserId) {
-      return conversation['participant1_profile']?['full_name'] ?? 'Kullanıcı';
-    }
-    return conversation['participant2_profile']?['full_name'] ?? 'Kullanıcı';
+    return conversation['other_user_profile']?['full_name'] ?? 'Kullanıcı';
   }
 
   String _getOtherParticipantAvatar(Map<String, dynamic> conversation) {
-    final currentUserId = Supabase.instance.client.auth.currentUser!.id;
-    if (conversation['participant_1'] == currentUserId) {
-      return conversation['participant1_profile']?['avatar_url'] ?? '';
-    }
-    return conversation['participant2_profile']?['avatar_url'] ?? '';
+    return conversation['other_user_profile']?['avatar_url'] ?? '';
   }
 
   String _getOtherParticipantId(Map<String, dynamic> conversation) {
@@ -129,7 +120,7 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => context.push('/contact-search'),
         backgroundColor: colors.primaryButton,
         child: Icon(Icons.person_add_alt_1, color: colors.buttonText),
       ),

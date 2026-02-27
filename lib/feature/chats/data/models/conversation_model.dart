@@ -17,14 +17,16 @@ class ConversationModel {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      id: json['id'],
-      participant1: json['participant1'],
-      participant2: json['participant2'],
+      id: json['id'] ?? '',
+      participant1: json['participant_1'] ?? '',
+      participant2: json['participant_2'] ?? '',
       lastMessage: json['last_message'],
       lastMessageAt: json['last_message_at'] != null
           ? DateTime.parse(json['last_message_at'])
           : null,
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
     );
   }
 }
