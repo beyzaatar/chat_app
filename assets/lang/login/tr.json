@@ -20,5 +20,9 @@
   "loginSendCode": "Doğrulama Kodu Gönder",
   "loginVerify": "Doğrula",
   "loginUnknownError": "Bilinmeyen hata",
-  "loginErrorOccurred": "Bir hata oluştu"
+  "loginErrorOccurred": "Bir hata oluştu",
+  "loginVerificationTitle": "Doğrulama",
+  "loginVerificationCodeSent": "{email} adresine\ndoğrulama kodu gönderildi",
+  "loginEnter6DigitCode": "Lütfen 6 haneli kodu giriniz",
+  "loginInvalidCode": "Geçersiz kod"
 }

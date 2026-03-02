@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/auth/presentation/widgets/otp_text_form_field.dart';
 import 'package:flutter/material.dart';
 
@@ -70,7 +71,7 @@ class OtpFormState extends State<OtpForm> {
             ),
             child: widget.isLoading
                 ? const CircularProgressIndicator()
-                : const Text("Giriş Yap"),
+                : Text(AppLocalizations.of(context)!.t('loginTitle')),
           ),
         ],
       ),

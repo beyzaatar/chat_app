@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/auth/application/providers/auth_providers.dart';
 import 'package:chat_app/feature/auth/application/state/auth_state.dart';
 import 'package:chat_app/feature/auth/presentation/pages/change_password_page.dart';
@@ -33,10 +34,11 @@ class VerificationPageState extends ConsumerState<VerificationPage> {
   String get _otpCode => _controllers.map((c) => c.text).join();
 
   Future<void> _verifyOtp() async {
+    final local = AppLocalizations.of(context)!;
     if (_otpCode.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen 6 haneli kodu giriniz')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(local.t('loginEnter6DigitCode'))));
       return;
     }
 
@@ -59,7 +61,9 @@ class VerificationPageState extends ConsumerState<VerificationPage> {
       }
     } else if (authState.status == AuthStatus.error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authState.errorMessage ?? 'Geçersiz kod')),
+        SnackBar(
+          content: Text(authState.errorMessage ?? local.t('loginInvalidCode')),
+        ),
       );
     }
   }
@@ -67,16 +71,16 @@ class VerificationPageState extends ConsumerState<VerificationPage> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
+    final local = AppLocalizations.of(context)!;
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState.status == AuthStatus.loading;
 
     return Scaffold(
       backgroundColor: colors.scaffoldBackground,
       body: LogoWithTitle(
-        title: 'Doğrulama',
-        subText: "${widget.email} adresine\ndoğrulama kodu gönderildi",
+        title: local.t('loginVerificationTitle'),
+        subText: local.tp('loginVerificationCodeSent', {'email': widget.email}),
         children: [
-          Text(widget.email),
           SizedBox(height: MediaQuery.of(context).size.height * 0.04),
           // OTP Form
           OtpForm(

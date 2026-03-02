@@ -20,5 +20,9 @@
   "loginSendCode": "Send Verification Code",
   "loginVerify": "Verify",
   "loginUnknownError": "Unknown error",
-  "loginErrorOccurred": "An error occurred"
+  "loginErrorOccurred": "An error occurred",
+  "loginVerificationTitle": "Verification",
+  "loginVerificationCodeSent": "Verification code sent to\n{email}",
+  "loginEnter6DigitCode": "Please enter the 6-digit code",
+  "loginInvalidCode": "Invalid code"
 }
