@@ -1,0 +1,22 @@
+{
+  "commonOk": "Tamam",
+  "commonCancel": "İptal",
+  "commonYes": "Evet",
+  "commonNo": "Hayır",
+  "commonSave": "Kaydet",
+  "commonDelete": "Sil",
+  "commonEdit": "Düzenle",
+  "commonClose": "Kapat",
+  "commonBack": "Geri",
+  "commonNext": "İleri",
+  "commonLoading": "Yükleniyor...",
+  "commonError": "Hata",
+  "commonSuccess": "Başarılı",
+  "commonWarning": "Uyarı",
+  "commonInfo": "Bilgi",
+  "commonSearch": "Ara",
+  "commonRetry": "Tekrar Dene",
+  "commonContinue": "Devam Et",
+  "commonDone": "Bitti",
+  "commonSend": "Gönder"
+}

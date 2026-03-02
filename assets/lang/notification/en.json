@@ -1,0 +1,14 @@
+{
+  "notificationTitle": "Notifications",
+  "notificationEmpty": "No notifications",
+  "notificationNewMessage": "New message",
+  "notificationMissedCall": "Missed call",
+  "notificationMarkAllRead": "Mark All as Read",
+  "notificationClear": "Clear Notifications",
+  "notificationSettings": "Notification Settings",
+  "notificationMute": "Mute Notifications",
+  "notificationUnmute": "Unmute Notifications",
+  "notificationSound": "Notification Sound",
+  "notificationVibration": "Vibration",
+  "notificationPreview": "Message Preview"
+}

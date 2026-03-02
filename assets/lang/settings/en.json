@@ -1,0 +1,22 @@
+{
+  "settingsTitle": "Settings",
+  "settingsGeneral": "General",
+  "settingsAccount": "Account",
+  "settingsPrivacy": "Privacy and Security",
+  "settingsNotifications": "Notifications",
+  "settingsAppearance": "Appearance",
+  "settingsLanguage": "Language",
+  "settingsTheme": "Theme",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
+  "settingsThemeSystem": "System",
+  "settingsStorage": "Storage and Data",
+  "settingsHelp": "Help",
+  "settingsAbout": "About",
+  "settingsVersion": "Version",
+  "settingsTerms": "Terms of Service",
+  "settingsPrivacyPolicy": "Privacy Policy",
+  "settingsContactUs": "Contact Us",
+  "settingsFeedback": "Feedback",
+  "settingsRate": "Rate the App"
+}

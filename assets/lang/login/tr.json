@@ -1,0 +1,21 @@
+{
+  "loginTitle": "Giriş Yap",
+  "loginEmail": "E-posta",
+  "loginPassword": "Şifre",
+  "loginForgotPassword": "Şifremi Unuttum",
+  "loginRememberMe": "Beni Hatırla",
+  "loginSignIn": "Giriş Yap",
+  "loginSignUp": "Kayıt Ol",
+  "loginNoAccount": "Hesabınız yok mu?",
+  "loginHaveAccount": "Zaten hesabınız var mı?",
+  "loginInvalidEmail": "Geçersiz e-posta adresi",
+  "loginInvalidPassword": "Şifre en az 6 karakter olmalıdır",
+  "loginWelcomeBack": "Tekrar Hoş Geldiniz",
+  "loginOrContinueWith": "veya şununla devam edin",
+  "loginGoogle": "Google ile Giriş",
+  "loginApple": "Apple ile Giriş",
+  "loginPhoneNumber": "Telefon Numarası",
+  "loginVerificationCode": "Doğrulama Kodu",
+  "loginSendCode": "Kod Gönder",
+  "loginVerify": "Doğrula"
+}

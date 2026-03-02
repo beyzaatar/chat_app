@@ -1,0 +1,14 @@
+{
+  "notificationTitle": "Bildirimler",
+  "notificationEmpty": "Bildirim yok",
+  "notificationNewMessage": "Yeni mesaj",
+  "notificationMissedCall": "Cevapsız arama",
+  "notificationMarkAllRead": "Tümünü Okundu İşaretle",
+  "notificationClear": "Bildirimleri Temizle",
+  "notificationSettings": "Bildirim Ayarları",
+  "notificationMute": "Bildirimleri Sessize Al",
+  "notificationUnmute": "Bildirimleri Aç",
+  "notificationSound": "Bildirim Sesi",
+  "notificationVibration": "Titreşim",
+  "notificationPreview": "Mesaj Önizleme"
+}

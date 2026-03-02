@@ -1,0 +1,22 @@
+{
+  "commonOk": "OK",
+  "commonCancel": "Cancel",
+  "commonYes": "Yes",
+  "commonNo": "No",
+  "commonSave": "Save",
+  "commonDelete": "Delete",
+  "commonEdit": "Edit",
+  "commonClose": "Close",
+  "commonBack": "Back",
+  "commonNext": "Next",
+  "commonLoading": "Loading...",
+  "commonError": "Error",
+  "commonSuccess": "Success",
+  "commonWarning": "Warning",
+  "commonInfo": "Info",
+  "commonSearch": "Search",
+  "commonRetry": "Retry",
+  "commonContinue": "Continue",
+  "commonDone": "Done",
+  "commonSend": "Send"
+}

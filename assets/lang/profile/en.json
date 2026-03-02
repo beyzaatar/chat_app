@@ -1,0 +1,18 @@
+{
+  "profileTitle": "Profile",
+  "profileEditProfile": "Edit Profile",
+  "profileName": "Full Name",
+  "profileUsername": "Username",
+  "profileBio": "About",
+  "profilePhone": "Phone",
+  "profileEmail": "Email",
+  "profileChangePhoto": "Change Photo",
+  "profileRemovePhoto": "Remove Photo",
+  "profileStatus": "Status",
+  "profileOnlineStatus": "Online Status",
+  "profileLastSeenVisible": "Last Seen Visible",
+  "profilePrivacy": "Privacy",
+  "profileBlocked": "Blocked Users",
+  "profileLogout": "Logout",
+  "profileDeleteAccount": "Delete Account"
+}

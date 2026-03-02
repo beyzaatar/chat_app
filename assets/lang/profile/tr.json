@@ -1,0 +1,18 @@
+{
+  "profileTitle": "Profil",
+  "profileEditProfile": "Profili Düzenle",
+  "profileName": "Ad Soyad",
+  "profileUsername": "Kullanıcı Adı",
+  "profileBio": "Hakkımda",
+  "profilePhone": "Telefon",
+  "profileEmail": "E-posta",
+  "profileChangePhoto": "Fotoğrafı Değiştir",
+  "profileRemovePhoto": "Fotoğrafı Kaldır",
+  "profileStatus": "Durum",
+  "profileOnlineStatus": "Çevrimiçi Durumu",
+  "profileLastSeenVisible": "Son Görülme Görünür",
+  "profilePrivacy": "Gizlilik",
+  "profileBlocked": "Engellenen Kullanıcılar",
+  "profileLogout": "Çıkış Yap",
+  "profileDeleteAccount": "Hesabı Sil"
+}

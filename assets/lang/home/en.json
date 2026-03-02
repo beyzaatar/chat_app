@@ -1,0 +1,14 @@
+{
+  "homeTitle": "Home",
+  "homeWelcome": "Welcome",
+  "homeChats": "Chats",
+  "homeCalls": "Calls",
+  "homeContacts": "Contacts",
+  "homeNoChats": "No chats yet",
+  "homeStartChat": "Start Chat",
+  "homeNewMessage": "New Message",
+  "homeOnline": "Online",
+  "homeOffline": "Offline",
+  "homeLastSeen": "Last seen",
+  "homeTyping": "typing..."
+}

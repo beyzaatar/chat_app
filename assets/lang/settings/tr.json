@@ -1,0 +1,22 @@
+{
+  "settingsTitle": "Ayarlar",
+  "settingsGeneral": "Genel",
+  "settingsAccount": "Hesap",
+  "settingsPrivacy": "Gizlilik ve Güvenlik",
+  "settingsNotifications": "Bildirimler",
+  "settingsAppearance": "Görünüm",
+  "settingsLanguage": "Dil",
+  "settingsTheme": "Tema",
+  "settingsThemeLight": "Açık",
+  "settingsThemeDark": "Koyu",
+  "settingsThemeSystem": "Sistem",
+  "settingsStorage": "Depolama ve Veri",
+  "settingsHelp": "Yardım",
+  "settingsAbout": "Hakkında",
+  "settingsVersion": "Sürüm",
+  "settingsTerms": "Kullanım Koşulları",
+  "settingsPrivacyPolicy": "Gizlilik Politikası",
+  "settingsContactUs": "Bize Ulaşın",
+  "settingsFeedback": "Geri Bildirim",
+  "settingsRate": "Uygulamayı Değerlendir"
+}

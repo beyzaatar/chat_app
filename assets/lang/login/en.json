@@ -1,0 +1,21 @@
+{
+  "loginTitle": "Login",
+  "loginEmail": "Email",
+  "loginPassword": "Password",
+  "loginForgotPassword": "Forgot Password",
+  "loginRememberMe": "Remember Me",
+  "loginSignIn": "Sign In",
+  "loginSignUp": "Sign Up",
+  "loginNoAccount": "Don't have an account?",
+  "loginHaveAccount": "Already have an account?",
+  "loginInvalidEmail": "Invalid email address",
+  "loginInvalidPassword": "Password must be at least 6 characters",
+  "loginWelcomeBack": "Welcome Back",
+  "loginOrContinueWith": "or continue with",
+  "loginGoogle": "Sign in with Google",
+  "loginApple": "Sign in with Apple",
+  "loginPhoneNumber": "Phone Number",
+  "loginVerificationCode": "Verification Code",
+  "loginSendCode": "Send Code",
+  "loginVerify": "Verify"
+}
