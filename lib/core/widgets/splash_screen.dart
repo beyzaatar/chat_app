@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:chat_app/core/services/notification_service.dart';
 import 'package:chat_app/feature/auth/application/providers/auth_providers.dart';
@@ -32,7 +34,11 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       return;
     }
     // Bildirim servisini başlat
-    await NotificationService().initialize();
+    try {
+      await NotificationService().initialize();
+    } catch (e) {
+      log('Notification error: $e');
+    }
 
     final hasProfile = await ref
         .read(authNotifierProvider.notifier)
