@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/feature/auth/application/providers/auth_providers.dart';
@@ -27,6 +28,8 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final local = AppLocalizations.of(context);
+
     await ref
         .read(authNotifierProvider.notifier)
         .createProfile(
@@ -39,7 +42,11 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
       context.go('/entry-point');
     } else if (authState.status == AuthStatus.error && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authState.errorMessage ?? 'Bir hata oluştu')),
+        SnackBar(
+          content: Text(
+            authState.errorMessage ?? local!.t('loginErrorOccurred'),
+          ),
+        ),
       );
     }
   }
@@ -49,6 +56,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
     final colors = Theme.of(context).extension<AppColors>()!;
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState.status == AuthStatus.loading;
+    final local = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.scaffoldBackground,
@@ -67,7 +75,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                   ),
                   SizedBox(height: constraints.maxHeight * 0.08),
                   Text(
-                    "Profili Tamamla",
+                    local.t('profileComplete'),
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colors.textPrimary,
@@ -81,7 +89,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                         TextFormField(
                           controller: _fullNameController,
                           decoration: InputDecoration(
-                            hintText: 'İsim Soyisim',
+                            hintText: local.t('profileFullName'),
                             filled: true,
                             fillColor: colors.inputBackground,
                             contentPadding: const EdgeInsets.symmetric(
@@ -97,7 +105,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'İsim soyisim giriniz';
+                              return local.t('profileFullNameHint');
                             }
                             return null;
                           },
@@ -106,7 +114,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                         TextFormField(
                           controller: _usernameController,
                           decoration: InputDecoration(
-                            hintText: 'Kullanıcı Adı',
+                            hintText: local.t('profileUsername'),
                             filled: true,
                             fillColor: colors.inputBackground,
                             contentPadding: const EdgeInsets.symmetric(
@@ -122,10 +130,10 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Kullanıcı adı giriniz';
+                              return local.t('profileUsernameHint');
                             }
                             if (value.contains(' ')) {
-                              return 'Kullanıcı adı boşluk içeremez';
+                              return local.t('profileUsernameNoSpaces');
                             }
                             return null;
                           },
@@ -142,7 +150,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                           ),
                           child: isLoading
                               ? const CircularProgressIndicator()
-                              : const Text("Devam Et"),
+                              : Text(local.t('commonContinue')),
                         ),
                       ],
                     ),

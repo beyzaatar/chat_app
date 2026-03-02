@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/chats/application/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +41,7 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
     final messagesAsync = ref.watch(
       messagesStreamProvider(widget.conversationId),
     );
+    final local = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.scaffoldBackground,
@@ -87,9 +89,10 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
           Expanded(
             child: messagesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Hata: $e')),
+              error: (e, _) =>
+                  Center(child: Text('${local.t('homeError')}: $e')),
               data: (messages) => messages.isEmpty
-                  ? const Center(child: Text('Henüz mesaj yok'))
+                  ? Center(child: Text(local.t('homeNoMessages')))
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       itemCount: messages.length,

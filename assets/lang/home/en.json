@@ -10,5 +10,18 @@
   "homeOnline": "Online",
   "homeOffline": "Offline",
   "homeLastSeen": "Last seen",
-  "homeTyping": "typing..."
+  "homeTyping": "typing...",
+  "homeRecentMessages": "Recent Messages",
+  "homeActive": "Active",
+  "homeError": "Error",
+  "homeNoUsers": "No users yet",
+  "homeUser": "User",
+  "homeMinutesAgo": "{count}m ago",
+  "homeHoursAgo": "{count}h ago",
+  "homeDaysAgo": "{count}d ago",
+  "homeTypeMessage": "Type a message...",
+  "homeNoMessages": "No messages yet",
+  "homeSearchHint": "Search name or username...",
+  "homeSearchPrompt": "Type to search for users",
+  "homeUserNotFound": "User not found"
 }

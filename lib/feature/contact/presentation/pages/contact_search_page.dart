@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/chats/application/providers/chat_providers.dart';
 import 'package:chat_app/feature/chats/application/state/chat_state.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,7 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
     final colors = Theme.of(context).extension<AppColors>()!;
     final chatState = ref.watch(chatNotifierProvider);
     final isLoading = chatState.status == ChatStatus.loading;
+    final local = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.scaffoldBackground,
@@ -56,7 +58,10 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
         elevation: 0,
         backgroundColor: colors.primaryButton,
         foregroundColor: colors.buttonText,
-        title: Text("Kişiler", style: TextStyle(color: colors.buttonText)),
+        title: Text(
+          local.t('homeContacts'),
+          style: TextStyle(color: colors.buttonText),
+        ),
       ),
       body: Column(
         children: [
@@ -74,7 +79,7 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
               decoration: InputDecoration(
                 fillColor: colors.buttonText,
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
-                hintText: "İsim veya kullanıcı adı ara...",
+                hintText: local.t('homeSearchHint'),
                 hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 contentPadding: const EdgeInsets.symmetric(
@@ -95,8 +100,8 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
                 ? Center(
                     child: Text(
                       _searchController.text.isEmpty
-                          ? 'Aramak istediğiniz kişiyi yazın'
-                          : 'Kullanıcı bulunamadı',
+                          ? local.t('homeSearchPrompt')
+                          : local.t('homeUserNotFound'),
                       style: TextStyle(color: Colors.grey),
                     ),
                   )
@@ -105,7 +110,7 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
                     itemBuilder: (context, index) {
                       final user = chatState.searchResults[index];
                       final avatarUrl = user['avatar_url'] ?? '';
-                      final fullName = user['full_name'] ?? 'Kullanıcı';
+                      final fullName = user['full_name'] ?? local.t('homeUser');
                       final username = user['username'] ?? '';
 
                       return ListTile(

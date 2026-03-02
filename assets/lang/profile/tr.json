@@ -6,6 +6,7 @@
   "profileBio": "Hakkımda",
   "profilePhone": "Telefon",
   "profileEmail": "E-posta",
+  "profileEmailAddress": "E-posta Adresi",
   "profileChangePhoto": "Fotoğrafı Değiştir",
   "profileRemovePhoto": "Fotoğrafı Kaldır",
   "profileStatus": "Durum",
@@ -14,5 +15,12 @@
   "profilePrivacy": "Gizlilik",
   "profileBlocked": "Engellenen Kullanıcılar",
   "profileLogout": "Çıkış Yap",
-  "profileDeleteAccount": "Hesabı Sil"
+  "profileDeleteAccount": "Hesabı Sil",
+  "profileUserId": "Kullanıcı ID",
+  "profileLocation": "Konum",
+  "profileComplete": "Profili Tamamla",
+  "profileFullName": "İsim Soyisim",
+  "profileFullNameHint": "İsim soyisim giriniz",
+  "profileUsernameHint": "Kullanıcı adı giriniz",
+  "profileUsernameNoSpaces": "Kullanıcı adı boşluk içeremez"
 }

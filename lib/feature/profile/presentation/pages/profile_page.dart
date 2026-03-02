@@ -1,3 +1,4 @@
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,6 +8,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final local = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
@@ -15,7 +17,7 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
         title: Text(
-          "Profile",
+          local!.t('profileTitle'),
           style: theme.textTheme.titleLarge?.copyWith(
             color: theme.colorScheme.onPrimary,
             fontWeight: FontWeight.bold,
@@ -48,10 +50,13 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             Divider(height: 32, color: theme.dividerColor, thickness: 1),
-            Info(infoKey: "User ID", info: "@annette.me"),
-            Info(infoKey: "Location", info: "New York, NYC"),
-            Info(infoKey: "Phone", info: "(239) 555-0108"),
-            Info(infoKey: "Email Address", info: "demo@mail.com"),
+            Info(infoKey: local.t('profileUserId'), info: "@annette.me"),
+            Info(infoKey: local.t('profileLocation'), info: "New York, NYC"),
+            Info(infoKey: local.t('profilePhone'), info: "(239) 555-0108"),
+            Info(
+              infoKey: local.t('profileEmailAddress'),
+              info: "demo@mail.com",
+            ),
             const SizedBox(height: 16.0),
             Align(
               alignment: Alignment.centerRight,
@@ -66,7 +71,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                   onPressed: () {},
                   child: Text(
-                    "Edit profile",
+                    local.t('profileEditProfile'),
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.w600,

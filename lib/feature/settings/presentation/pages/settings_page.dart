@@ -1,3 +1,4 @@
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/auth/application/providers/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final local = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
@@ -20,14 +22,14 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 const SizedBox(height: 16),
                 Text(
-                  "Account Settings",
+                  local!.t('settingsAccountSettings'),
                   style: theme.textTheme.headlineMedium?.copyWith(
                     color: theme.colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  "Update your settings like notifications, payments, profile edit etc.",
+                  local.t('settingsAccountSettingsDesc'),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
@@ -35,44 +37,44 @@ class SettingsPage extends ConsumerWidget {
                 const SizedBox(height: 24),
                 ProfileMenuCard(
                   icon: Icons.person_outline,
-                  title: "Profile Information",
-                  subTitle: "Change your account information",
+                  title: local.t('settingsProfileInfo'),
+                  subTitle: local.t('settingsProfileInfoDesc'),
                   press: () {},
                 ),
                 ProfileMenuCard(
                   icon: Icons.lock_outline,
-                  title: "Change Password",
-                  subTitle: "Change your password",
+                  title: local.t('settingsChangePassword'),
+                  subTitle: local.t('settingsChangePasswordDesc'),
                   press: () {},
                 ),
                 ProfileMenuCard(
                   icon: Icons.credit_card,
-                  title: "Payment Methods",
-                  subTitle: "Add your credit & debit cards",
+                  title: local.t('settingsPaymentMethods'),
+                  subTitle: local.t('settingsPaymentMethodsDesc'),
                   press: () {},
                 ),
                 ProfileMenuCard(
                   icon: Icons.location_on_outlined,
-                  title: "Locations",
-                  subTitle: "Add or remove your delivery locations",
+                  title: local.t('settingsLocations'),
+                  subTitle: local.t('settingsLocationsDesc'),
                   press: () {},
                 ),
                 ProfileMenuCard(
                   icon: Icons.group_outlined,
-                  title: "Add Social Account",
-                  subTitle: "Add Facebook, Twitter etc ",
+                  title: local.t('settingsAddSocialAccount'),
+                  subTitle: local.t('settingsAddSocialAccountDesc'),
                   press: () {},
                 ),
                 ProfileMenuCard(
                   icon: Icons.share_outlined,
-                  title: "Refer to Friends",
-                  subTitle: "Get \$10 for reffering friends",
+                  title: local.t('settingsReferFriends'),
+                  subTitle: local.t('settingsReferFriendsDesc'),
                   press: () {},
                 ),
                 const SizedBox(height: 32),
                 ProfileMenuCard(
                   icon: Icons.logout,
-                  title: "Logout",
+                  title: local.t('settingsLogout'),
                   subTitle: "",
                   press: () async {
                     await ref.read(authNotifierProvider.notifier).signOut();

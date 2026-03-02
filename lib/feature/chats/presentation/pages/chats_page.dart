@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/chats/application/providers/chat_providers.dart';
 import 'package:chat_app/feature/chats/application/state/chat_state.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,12 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
     );
   }
 
-  String _getOtherParticipantName(Map<String, dynamic> conversation) {
-    return conversation['other_user_profile']?['full_name'] ?? 'Kullanıcı';
+  String _getOtherParticipantName(
+    Map<String, dynamic> conversation,
+    AppLocalizations local,
+  ) {
+    return conversation['other_user_profile']?['full_name'] ??
+        local.t('homeUser');
   }
 
   String _getOtherParticipantAvatar(Map<String, dynamic> conversation) {
@@ -44,6 +49,7 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final chatState = ref.watch(chatNotifierProvider);
+    final local = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: colors.scaffoldBackground,
@@ -53,7 +59,10 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
         backgroundColor: colors.primaryButton,
         foregroundColor: colors.buttonText,
         automaticallyImplyLeading: false,
-        title: Text("Sohbetler", style: TextStyle(color: colors.buttonText)),
+        title: Text(
+          local.t('homeChats'),
+          style: TextStyle(color: colors.buttonText),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -69,9 +78,16 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
             color: colors.primaryButton,
             child: Row(
               children: [
-                FillOutlineButton(press: () {}, text: "Son Mesajlar"),
+                FillOutlineButton(
+                  press: () {},
+                  text: local.t('homeRecentMessages'),
+                ),
                 const SizedBox(width: 16.0),
-                FillOutlineButton(press: () {}, text: "Aktif", isFilled: false),
+                FillOutlineButton(
+                  press: () {},
+                  text: local.t('homeActive'),
+                  isFilled: false,
+                ),
               ],
             ),
           ),
@@ -79,21 +95,24 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
             child: chatState.status == ChatStatus.loading
                 ? const Center(child: CircularProgressIndicator())
                 : chatState.status == ChatStatus.error
-                ? Center(child: Text(chatState.errorMessage ?? 'Hata'))
+                ? Center(
+                    child: Text(chatState.errorMessage ?? local.t('homeError')),
+                  )
                 : chatState.conversationsWithProfiles.isEmpty
-                ? const Center(child: Text('Henüz sohbet yok'))
+                ? Center(child: Text(local.t('homeNoChats')))
                 : ListView.builder(
                     itemCount: chatState.conversationsWithProfiles.length,
                     itemBuilder: (context, index) {
                       final conversation =
                           chatState.conversationsWithProfiles[index];
                       return ChatCard(
-                        name: _getOtherParticipantName(conversation),
+                        name: _getOtherParticipantName(conversation, local),
                         lastMessage: conversation['last_message'] ?? '',
                         avatarUrl: _getOtherParticipantAvatar(conversation),
                         time: conversation['last_message_at'] != null
                             ? _formatTime(
                                 DateTime.parse(conversation['last_message_at']),
+                                local,
                               )
                             : '',
                         press: () {
@@ -106,6 +125,7 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
                               ),
                               'otherUserName': _getOtherParticipantName(
                                 conversation,
+                                local,
                               ),
                               'otherUserAvatar': _getOtherParticipantAvatar(
                                 conversation,
@@ -127,11 +147,15 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
     );
   }
 
-  String _formatTime(DateTime dateTime) {
+  String _formatTime(DateTime dateTime, AppLocalizations local) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
-    if (difference.inMinutes < 60) return '${difference.inMinutes}d önce';
-    if (difference.inHours < 24) return '${difference.inHours}s önce';
-    return '${difference.inDays}g önce';
+    if (difference.inMinutes < 60) {
+      return local.tp('homeMinutesAgo', {'count': '${difference.inMinutes}'});
+    }
+    if (difference.inHours < 24) {
+      return local.tp('homeHoursAgo', {'count': '${difference.inHours}'});
+    }
+    return local.tp('homeDaysAgo', {'count': '${difference.inDays}'});
   }
 }

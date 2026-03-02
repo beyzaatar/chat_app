@@ -1,6 +1,7 @@
 {
   "loginTitle": "Login",
   "loginEmail": "Email",
+  "loginEmailAddress": "Email Address",
   "loginPassword": "Password",
   "loginForgotPassword": "Forgot Password",
   "loginRememberMe": "Remember Me",
@@ -16,6 +17,8 @@
   "loginApple": "Sign in with Apple",
   "loginPhoneNumber": "Phone Number",
   "loginVerificationCode": "Verification Code",
-  "loginSendCode": "Send Code",
-  "loginVerify": "Verify"
+  "loginSendCode": "Send Verification Code",
+  "loginVerify": "Verify",
+  "loginUnknownError": "Unknown error",
+  "loginErrorOccurred": "An error occurred"
 }

@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/auth/application/providers/auth_providers.dart';
 import 'package:chat_app/feature/auth/application/state/auth_state.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _LoginWithEmailState extends ConsumerState<LoginWithEmail> {
   Future<void> _sendOtp() async {
     if (!_formKey.currentState!.validate()) return;
     final email = _emailController.text.trim();
+    final local = AppLocalizations.of(context);
     await ref.read(authNotifierProvider.notifier).sendOtp(email);
 
     final authState = ref.read(authNotifierProvider);
@@ -31,7 +33,11 @@ class _LoginWithEmailState extends ConsumerState<LoginWithEmail> {
       context.go('/verification', extra: email);
     } else if (authState.status == AuthStatus.error && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authState.errorMessage ?? 'Bilinmeyen hata')),
+        SnackBar(
+          content: Text(
+            authState.errorMessage ?? local!.t('loginUnknownError'),
+          ),
+        ),
       );
     }
   }
@@ -41,6 +47,7 @@ class _LoginWithEmailState extends ConsumerState<LoginWithEmail> {
     final colors = Theme.of(context).extension<AppColors>()!;
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState.status == AuthStatus.loading;
+    final local = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: colors.scaffoldBackground,
@@ -59,7 +66,7 @@ class _LoginWithEmailState extends ConsumerState<LoginWithEmail> {
                   ),
                   SizedBox(height: constraints.maxHeight * 0.1),
                   Text(
-                    "Giriş Yap",
+                    local!.t('loginTitle'),
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -72,7 +79,7 @@ class _LoginWithEmailState extends ConsumerState<LoginWithEmail> {
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
-                            hintText: 'Email Adresi',
+                            hintText: local.t('loginEmailAddress'),
                             filled: true,
                             fillColor: colors.inputBackground,
                             contentPadding: EdgeInsets.symmetric(
@@ -103,7 +110,7 @@ class _LoginWithEmailState extends ConsumerState<LoginWithEmail> {
                             minimumSize: const Size(double.infinity, 48),
                             shape: const StadiumBorder(),
                           ),
-                          child: const Text("Doğrulama Kodu Gönder"),
+                          child: Text(local.t('loginSendCode')),
                         ),
                       ],
                     ),

@@ -6,6 +6,7 @@
   "profileBio": "About",
   "profilePhone": "Phone",
   "profileEmail": "Email",
+  "profileEmailAddress": "Email Address",
   "profileChangePhoto": "Change Photo",
   "profileRemovePhoto": "Remove Photo",
   "profileStatus": "Status",
@@ -14,5 +15,12 @@
   "profilePrivacy": "Privacy",
   "profileBlocked": "Blocked Users",
   "profileLogout": "Logout",
-  "profileDeleteAccount": "Delete Account"
+  "profileDeleteAccount": "Delete Account",
+  "profileUserId": "User ID",
+  "profileLocation": "Location",
+  "profileComplete": "Complete Profile",
+  "profileFullName": "Full Name",
+  "profileFullNameHint": "Enter your full name",
+  "profileUsernameHint": "Enter username",
+  "profileUsernameNoSpaces": "Username cannot contain spaces"
 }

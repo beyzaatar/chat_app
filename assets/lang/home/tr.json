@@ -10,5 +10,18 @@
   "homeOnline": "Çevrimiçi",
   "homeOffline": "Çevrimdışı",
   "homeLastSeen": "Son görülme",
-  "homeTyping": "yazıyor..."
+  "homeTyping": "yazıyor...",
+  "homeRecentMessages": "Son Mesajlar",
+  "homeActive": "Aktif",
+  "homeError": "Hata",
+  "homeNoUsers": "Henüz kullanıcı yok",
+  "homeUser": "Kullanıcı",
+  "homeMinutesAgo": "{count}d önce",
+  "homeHoursAgo": "{count}s önce",
+  "homeDaysAgo": "{count}g önce",
+  "homeTypeMessage": "Mesajınızı yazın...",
+  "homeNoMessages": "Henüz mesaj yok",
+  "homeSearchHint": "İsim veya kullanıcı adı ara...",
+  "homeSearchPrompt": "Aramak istediğiniz kişiyi yazın",
+  "homeUserNotFound": "Kullanıcı bulunamadı"
 }

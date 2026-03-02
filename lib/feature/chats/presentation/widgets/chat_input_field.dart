@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/chats/application/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,6 +36,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
+    final local = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -58,7 +60,7 @@ class _ChatInputFieldState extends ConsumerState<ChatInputField> {
                   child: TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      hintText: "Mesajınızı yazın...",
+                      hintText: local.t('homeTypeMessage'),
                       suffixIcon: SizedBox(
                         width: 65,
                         child: Row(

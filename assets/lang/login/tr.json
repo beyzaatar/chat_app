@@ -1,6 +1,7 @@
 {
   "loginTitle": "Giriş Yap",
   "loginEmail": "E-posta",
+  "loginEmailAddress": "Email Adresi",
   "loginPassword": "Şifre",
   "loginForgotPassword": "Şifremi Unuttum",
   "loginRememberMe": "Beni Hatırla",
@@ -16,6 +17,8 @@
   "loginApple": "Apple ile Giriş",
   "loginPhoneNumber": "Telefon Numarası",
   "loginVerificationCode": "Doğrulama Kodu",
-  "loginSendCode": "Kod Gönder",
-  "loginVerify": "Doğrula"
+  "loginSendCode": "Doğrulama Kodu Gönder",
+  "loginVerify": "Doğrula",
+  "loginUnknownError": "Bilinmeyen hata",
+  "loginErrorOccurred": "Bir hata oluştu"
 }
