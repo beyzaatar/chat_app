@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/core/services/notification_service.dart';
 import 'package:chat_app/feature/auth/application/providers/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +31,8 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       context.go('/login-with-email');
       return;
     }
+    // Bildirim servisini başlat
+    await NotificationService().initialize();
 
     final hasProfile = await ref
         .read(authNotifierProvider.notifier)
