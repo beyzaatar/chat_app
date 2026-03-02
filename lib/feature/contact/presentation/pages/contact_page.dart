@@ -62,6 +62,7 @@ class _ContactPageState extends ConsumerState<ContactPage> {
         elevation: 0,
         backgroundColor: colors.primaryButton,
         foregroundColor: colors.buttonText,
+        automaticallyImplyLeading: false,
         title: Text(
           local.t('homeContacts'),
           style: TextStyle(color: colors.buttonText),

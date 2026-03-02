@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:chat_app/feature/call/presentation/pages/call_history_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:chat_app/feature/contact/presentation/pages/contact_page.dart';
 import 'package:chat_app/feature/profile/presentation/pages/profile_page.dart';
@@ -29,7 +30,7 @@ class _EntryPointUIState extends State<EntryPointUI> {
   List<Widget> pages = [
     const ChatsPage(),
     const ContactPage(), // Placeholder for Contacts
-    Center(child: Text('Aramalar')), // Placeholder for Calls
+    const CallHistoryPage(), // Placeholder for Calls
     const ProfilePage(), // Placeholder for Profile
   ];
 

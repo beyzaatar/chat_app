@@ -58,6 +58,7 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
         elevation: 0,
         backgroundColor: colors.primaryButton,
         foregroundColor: colors.buttonText,
+        iconTheme: IconThemeData(color: colors.buttonText),
         title: Text(
           local.t('homeContacts'),
           style: TextStyle(color: colors.buttonText),
@@ -78,7 +79,7 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
               },
               decoration: InputDecoration(
                 fillColor: colors.buttonText,
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
+                prefixIcon: Icon(Icons.search, color: colors.placeholder),
                 hintText: local.t('homeSearchHint'),
                 hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,

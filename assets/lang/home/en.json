@@ -23,5 +23,8 @@
   "homeNoMessages": "No messages yet",
   "homeSearchHint": "Search name or username...",
   "homeSearchPrompt": "Type to search for users",
-  "homeUserNotFound": "User not found"
+  "homeUserNotFound": "User not found",
+  "homeSearch": "Search",
+  "homeOutgoingCall": "Outgoing call",
+  "homeIncomingCall": "Incoming call"
 }

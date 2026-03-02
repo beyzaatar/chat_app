@@ -8,6 +8,7 @@ import 'package:chat_app/feature/auth/presentation/pages/sign_in_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/onboarding_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart';
 import 'package:chat_app/feature/call/presentation/pages/audio_call_page.dart';
+import 'package:chat_app/feature/call/presentation/pages/call_search_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/message_search_page.dart';
 import 'package:chat_app/feature/contact/presentation/pages/contact_search_page.dart';
@@ -85,6 +86,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/contact-search',
         builder: (context, state) => const ContactSearchPage(),
+      ),
+      GoRoute(
+        path: '/call-search',
+        builder: (context, state) => const CallSearchPage(),
       ),
     ],
   );

@@ -23,5 +23,8 @@
   "homeNoMessages": "Henüz mesaj yok",
   "homeSearchHint": "İsim veya kullanıcı adı ara...",
   "homeSearchPrompt": "Aramak istediğiniz kişiyi yazın",
-  "homeUserNotFound": "Kullanıcı bulunamadı"
+  "homeUserNotFound": "Kullanıcı bulunamadı",
+  "homeSearch": "Ara",
+  "homeOutgoingCall": "Giden arama",
+  "homeIncomingCall": "Gelen arama"
 }
