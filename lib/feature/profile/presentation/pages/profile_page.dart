@@ -69,7 +69,9 @@ class ProfilePage extends StatelessWidget {
                     minimumSize: const Size(double.infinity, 48),
                     shape: const StadiumBorder(),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push('/edit-profile');
+                  },
                   child: Text(
                     local.t('profileEditProfile'),
                     style: theme.textTheme.labelLarge?.copyWith(

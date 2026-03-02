@@ -22,5 +22,10 @@
   "profileFullName": "İsim Soyisim",
   "profileFullNameHint": "İsim soyisim giriniz",
   "profileUsernameHint": "Kullanıcı adı giriniz",
-  "profileUsernameNoSpaces": "Kullanıcı adı boşluk içeremez"
+  "profileUsernameNoSpaces": "Kullanıcı adı boşluk içeremez",
+  "profileAddress": "Adres",
+  "profileOldPassword": "Eski Şifre",
+  "profileNewPassword": "Yeni Şifre",
+  "profileCancel": "İptal",
+  "profileSaveUpdate": "Güncelle"
 }

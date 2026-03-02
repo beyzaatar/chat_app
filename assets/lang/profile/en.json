@@ -22,5 +22,10 @@
   "profileFullName": "Full Name",
   "profileFullNameHint": "Enter your full name",
   "profileUsernameHint": "Enter username",
-  "profileUsernameNoSpaces": "Username cannot contain spaces"
+  "profileUsernameNoSpaces": "Username cannot contain spaces",
+  "profileAddress": "Address",
+  "profileOldPassword": "Old Password",
+  "profileNewPassword": "New Password",
+  "profileCancel": "Cancel",
+  "profileSaveUpdate": "Save Update"
 }
