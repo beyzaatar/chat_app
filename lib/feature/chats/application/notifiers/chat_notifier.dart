@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/feature/chats/data/models/conversation_model.dart';
 import 'package:chat_app/feature/chats/data/repositories/chat_repository.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -33,7 +35,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
       );
       return conversation;
     } catch (e) {
-      print('getOrCreateConversation error: $e');
+      log('getOrCreateConversation error: $e');
       state = state.copyWith(
         status: ChatStatus.error,
         errorMessage: e.toString(),

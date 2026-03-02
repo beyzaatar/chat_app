@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:chat_app/feature/chats/application/providers/chat_providers.dart';
 import 'package:chat_app/feature/chats/application/state/chat_state.dart';
@@ -26,12 +28,12 @@ class _ContactPageState extends ConsumerState<ContactPage> {
     String otherUserName,
     String otherUserAvatar,
   ) async {
-    print('Starting conversation with: $otherUserId');
+    log('Starting conversation with: $otherUserId');
     final conversation = await ref
         .read(chatNotifierProvider.notifier)
         .getOrCreateConversation(otherUserId);
 
-    print('Conversation result: $conversation');
+    log('Conversation result: $conversation');
 
     if (conversation != null && mounted) {
       context.go(
