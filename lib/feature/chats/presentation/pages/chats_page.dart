@@ -112,48 +112,85 @@ class _ChatsPageState extends ConsumerState<ChatsPage>
           Expanded(
             child: chatState.status == ChatStatus.loading
                 ? const Center(child: CircularProgressIndicator())
-                : chatState.status == ChatStatus.error
-                ? Center(
-                    child: Text(chatState.errorMessage ?? local.t('homeError')),
-                  )
-                : chatState.conversationsWithProfiles.isEmpty
-                ? Center(child: Text(local.t('homeNoChats')))
-                : ListView.builder(
-                    itemCount: chatState.conversationsWithProfiles.length,
-                    itemBuilder: (context, index) {
-                      final conversation =
-                          chatState.conversationsWithProfiles[index];
-                      return ChatCard(
-                        name: _getOtherParticipantName(conversation, local),
-                        lastMessage: conversation['last_message'] ?? '',
-                        avatarUrl: _getOtherParticipantAvatar(conversation),
-                        time: conversation['last_message_at'] != null
-                            ? _formatTime(
-                                DateTime.parse(conversation['last_message_at']),
-                                local,
-                              )
-                            : '',
-                        unreadCount: conversation['unread_count'] ?? 0,
-                        press: () {
-                          context.push(
-                            '/messages',
-                            extra: {
-                              'conversationId': conversation['id'],
-                              'otherUserId': _getOtherParticipantId(
-                                conversation,
-                              ),
-                              'otherUserName': _getOtherParticipantName(
-                                conversation,
-                                local,
-                              ),
-                              'otherUserAvatar': _getOtherParticipantAvatar(
-                                conversation,
-                              ),
-                            },
-                          );
-                        },
-                      );
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      await ref
+                          .read(chatNotifierProvider.notifier)
+                          .loadConversations(showLoading: false);
                     },
+                    child: chatState.status == ChatStatus.error
+                        ? ListView(
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.5,
+                                child: Center(
+                                  child: Text(
+                                    chatState.errorMessage ??
+                                        local.t('homeError'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : chatState.conversationsWithProfiles.isEmpty
+                        ? ListView(
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.5,
+                                child: Center(
+                                  child: Text(local.t('homeNoChats')),
+                                ),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            itemCount:
+                                chatState.conversationsWithProfiles.length,
+                            itemBuilder: (context, index) {
+                              final conversation =
+                                  chatState.conversationsWithProfiles[index];
+                              return ChatCard(
+                                name: _getOtherParticipantName(
+                                  conversation,
+                                  local,
+                                ),
+                                lastMessage: conversation['last_message'] ?? '',
+                                avatarUrl: _getOtherParticipantAvatar(
+                                  conversation,
+                                ),
+                                time: conversation['last_message_at'] != null
+                                    ? _formatTime(
+                                        DateTime.parse(
+                                          conversation['last_message_at'],
+                                        ),
+                                        local,
+                                      )
+                                    : '',
+                                unreadCount: conversation['unread_count'] ?? 0,
+                                press: () {
+                                  context.push(
+                                    '/messages',
+                                    extra: {
+                                      'conversationId': conversation['id'],
+                                      'otherUserId': _getOtherParticipantId(
+                                        conversation,
+                                      ),
+                                      'otherUserName': _getOtherParticipantName(
+                                        conversation,
+                                        local,
+                                      ),
+                                      'otherUserAvatar':
+                                          _getOtherParticipantAvatar(
+                                            conversation,
+                                          ),
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                          ),
                   ),
           ),
         ],
