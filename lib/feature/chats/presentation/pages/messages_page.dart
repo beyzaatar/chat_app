@@ -123,10 +123,12 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
                 data: (messages) => messages.isEmpty
                     ? Center(child: Text(local.t('homeNoMessages')))
                     : ListView.builder(
+                        reverse: true,
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
-                          final message = messages[index];
+                          final reversedIndex = messages.length - 1 - index;
+                          final message = messages[reversedIndex];
                           final isSender = message.senderId == currentUserId;
                           return Padding(
                             padding: const EdgeInsets.only(top: 16.0),
