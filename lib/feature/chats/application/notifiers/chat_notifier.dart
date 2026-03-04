@@ -81,10 +81,6 @@ class ChatNotifier extends StateNotifier<ChatState> {
   }
 
   Future<void> searchUsers(String query) async {
-    if (query.isEmpty) {
-      state = state.copyWith(searchResults: []);
-      return;
-    }
     state = state.copyWith(status: ChatStatus.loading);
     try {
       final results = await _repository.searchUsers(query);

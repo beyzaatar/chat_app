@@ -4,6 +4,7 @@
   "homeChats": "Sohbetler",
   "homeCalls": "Aramalar",
   "homeContacts": "Kişiler",
+  "homeNoContacts": "Henüz kimseyle sohbet etmediniz. Aramaya başlayın!",
   "homeNoChats": "Henüz sohbet yok",
   "homeStartChat": "Sohbet Başlat",
   "homeNewMessage": "Yeni Mesaj",
@@ -24,6 +25,7 @@
   "homeSearchHint": "İsim veya kullanıcı adı ara...",
   "homeSearchPrompt": "Aramak istediğiniz kişiyi yazın",
   "homeUserNotFound": "Kullanıcı bulunamadı",
+  "homeChat": "Sohbet",
   "homeSearch": "Ara",
   "homeOutgoingCall": "Giden arama",
   "homeIncomingCall": "Gelen arama"

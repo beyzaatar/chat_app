@@ -4,6 +4,7 @@
   "homeChats": "Chats",
   "homeCalls": "Calls",
   "homeContacts": "Contacts",
+  "homeNoContacts": "You haven't chatted with anyone yet. Start searching!",
   "homeNoChats": "No chats yet",
   "homeStartChat": "Start Chat",
   "homeNewMessage": "New Message",
@@ -24,6 +25,7 @@
   "homeSearchHint": "Search name or username...",
   "homeSearchPrompt": "Type to search for users",
   "homeUserNotFound": "User not found",
+  "homeChat": "Chat",
   "homeSearch": "Search",
   "homeOutgoingCall": "Outgoing call",
   "homeIncomingCall": "Incoming call"

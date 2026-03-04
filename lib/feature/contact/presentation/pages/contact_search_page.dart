@@ -17,6 +17,15 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
   final _searchController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Sayfa açılınca tüm kullanıcıları yükle
+    Future.microtask(() {
+      ref.read(chatNotifierProvider.notifier).searchUsers('');
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -101,9 +110,9 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
                 ? Center(
                     child: Text(
                       _searchController.text.isEmpty
-                          ? local.t('homeSearchPrompt')
+                          ? local.t('homeNoContacts')
                           : local.t('homeUserNotFound'),
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   )
                 : ListView.builder(
@@ -113,6 +122,7 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
                       final avatarUrl = user['avatar_url'] ?? '';
                       final fullName = user['full_name'] ?? local.t('homeUser');
                       final username = user['username'] ?? '';
+                      final hasConversation = user['has_conversation'] ?? false;
 
                       return ListTile(
                         leading: CircleAvatar(
@@ -125,6 +135,26 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
                         ),
                         title: Text(fullName),
                         subtitle: Text('@$username'),
+                        trailing: hasConversation
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colors.primaryButton.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  local.t('homeChat'),
+                                  style: TextStyle(
+                                    color: colors.primaryButton,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              )
+                            : null,
                         onTap: () =>
                             _startConversation(user['id'], fullName, avatarUrl),
                       );

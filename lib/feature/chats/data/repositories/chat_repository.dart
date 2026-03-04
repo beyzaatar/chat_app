@@ -122,15 +122,36 @@ class ChatRepository {
   }
 
   Future<List<Map<String, dynamic>>> searchUsers(String query) async {
+    // Önce konuşma yapılan kullanıcıları al
+    final conversations = await _supabase
+        .from('conversations')
+        .select()
+        .or('participant_1.eq.$currentUserId,participant_2.eq.$currentUserId');
+
+    final conversationUserIds = conversations.map((conv) {
+      return conv['participant_1'] == currentUserId
+          ? conv['participant_2']
+          : conv['participant_1'];
+    }).toList();
+
     if (query.isEmpty) {
+      // Arama boşsa sadece konuşma yapılan kullanıcıları döndür
+      if (conversationUserIds.isEmpty) {
+        return [];
+      }
+
       final response = await _supabase
           .from('profiles')
           .select()
-          .neq('id', currentUserId)
+          .inFilter('id', conversationUserIds)
           .limit(50);
-      return List<Map<String, dynamic>>.from(response);
+
+      return List<Map<String, dynamic>>.from(response).map((user) {
+        return {...user, 'has_conversation': true};
+      }).toList();
     }
 
+    // Arama varsa tüm kullanıcıları ara
     final response = await _supabase
         .from('profiles')
         .select()
@@ -138,6 +159,12 @@ class ChatRepository {
         .neq('id', currentUserId)
         .limit(20);
 
-    return List<Map<String, dynamic>>.from(response);
+    // Her kullanıcıya has_conversation flag'i ekle
+    return List<Map<String, dynamic>>.from(response).map((user) {
+      return {
+        ...user,
+        'has_conversation': conversationUserIds.contains(user['id']),
+      };
+    }).toList();
   }
 }
