@@ -16,13 +16,31 @@ class ChatsPage extends ConsumerStatefulWidget {
   ConsumerState<ChatsPage> createState() => _ChatsPageState();
 }
 
-class _ChatsPageState extends ConsumerState<ChatsPage> {
+class _ChatsPageState extends ConsumerState<ChatsPage>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Future.microtask(
       () => ref.read(chatNotifierProvider.notifier).loadConversations(),
     );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Uygulama ön plana geldiğinde konuşmaları yenile
+      ref
+          .read(chatNotifierProvider.notifier)
+          .loadConversations(showLoading: false);
+    }
   }
 
   String _getOtherParticipantName(
@@ -115,6 +133,7 @@ class _ChatsPageState extends ConsumerState<ChatsPage> {
                                 local,
                               )
                             : '',
+                        unreadCount: conversation['unread_count'] ?? 0,
                         press: () {
                           context.push(
                             '/messages',

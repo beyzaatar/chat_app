@@ -28,10 +28,29 @@ class ChatRepository {
           .eq('id', otherUserId)
           .maybeSingle();
 
-      result.add({...conversation, 'other_user_profile': profile});
+      // Okunmamış mesaj sayısını al
+      final unreadCount = await getUnreadMessageCount(conversation['id']);
+
+      result.add({
+        ...conversation,
+        'other_user_profile': profile,
+        'unread_count': unreadCount,
+      });
     }
 
     return result;
+  }
+
+  // Okunmamış mesaj sayısını getir
+  Future<int> getUnreadMessageCount(String conversationId) async {
+    final response = await _supabase
+        .from('messages')
+        .select()
+        .eq('conversation_id', conversationId)
+        .eq('is_read', false)
+        .neq('sender_id', currentUserId);
+
+    return (response as List).length;
   }
 
   // Konuşma oluştur veya mevcutsa getir
@@ -98,6 +117,7 @@ class ChatRepository {
         .from('messages')
         .update({'is_read': true})
         .eq('conversation_id', conversationId)
+        .eq('is_read', false)
         .neq('sender_id', currentUserId);
   }
 

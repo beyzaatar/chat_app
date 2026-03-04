@@ -24,14 +24,23 @@ class MessagesPage extends ConsumerStatefulWidget {
 }
 
 class _MessagesPageState extends ConsumerState<MessagesPage> {
+  bool _hasMarkedAsRead = false;
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => ref
-          .read(chatNotifierProvider.notifier)
-          .markAsRead(widget.conversationId),
-    );
+    _markMessagesAsRead();
+  }
+
+  void _markMessagesAsRead() {
+    if (!_hasMarkedAsRead) {
+      _hasMarkedAsRead = true;
+      Future.microtask(() async {
+        await ref
+            .read(chatNotifierProvider.notifier)
+            .markAsRead(widget.conversationId);
+      });
+    }
   }
 
   @override
@@ -43,114 +52,135 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
     );
     final local = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: colors.scaffoldBackground,
-      appBar: AppBar(
-        centerTitle: false,
-        elevation: 0,
-        backgroundColor: colors.primaryButton,
-        foregroundColor: colors.buttonText,
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            BackButton(
-              color: colors.buttonText,
-              onPressed: () => context.pop(),
+    // Mesajlar yüklendiğinde okundu işaretle
+    messagesAsync.whenData((messages) {
+      if (messages.isNotEmpty) {
+        _markMessagesAsRead();
+      }
+    });
+
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop && mounted) {
+          // Geri dönüş yapıldığında konuşma listesini yenile
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (mounted) {
+            ref
+                .read(chatNotifierProvider.notifier)
+                .loadConversations(showLoading: false);
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: colors.scaffoldBackground,
+        appBar: AppBar(
+          centerTitle: false,
+          elevation: 0,
+          backgroundColor: colors.primaryButton,
+          foregroundColor: colors.buttonText,
+          automaticallyImplyLeading: false,
+          title: Row(
+            children: [
+              BackButton(
+                color: colors.buttonText,
+                onPressed: () => context.pop(),
+              ),
+              CircleAvatar(
+                backgroundImage: widget.otherUserAvatar.isNotEmpty
+                    ? NetworkImage(widget.otherUserAvatar)
+                    : null,
+                child: widget.otherUserAvatar.isEmpty
+                    ? const Icon(Icons.person)
+                    : null,
+              ),
+              const SizedBox(width: 12.0),
+              Text(
+                widget.otherUserName,
+                style: TextStyle(fontSize: 16, color: colors.buttonText),
+              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.local_phone, color: colors.buttonText),
+              onPressed: () => context.push("/audio-call"),
             ),
-            CircleAvatar(
-              backgroundImage: widget.otherUserAvatar.isNotEmpty
-                  ? NetworkImage(widget.otherUserAvatar)
-                  : null,
-              child: widget.otherUserAvatar.isEmpty
-                  ? const Icon(Icons.person)
-                  : null,
+            IconButton(
+              icon: Icon(Icons.videocam, color: colors.buttonText),
+              onPressed: () {},
             ),
-            const SizedBox(width: 12.0),
-            Text(
-              widget.otherUserName,
-              style: TextStyle(fontSize: 16, color: colors.buttonText),
-            ),
+            const SizedBox(width: 8.0),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.local_phone, color: colors.buttonText),
-            onPressed: () => context.push("/audio-call"),
-          ),
-          IconButton(
-            icon: Icon(Icons.videocam, color: colors.buttonText),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 8.0),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: messagesAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) =>
-                  Center(child: Text('${local.t('homeError')}: $e')),
-              data: (messages) => messages.isEmpty
-                  ? Center(child: Text(local.t('homeNoMessages')))
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        final message = messages[index];
-                        final isSender = message.senderId == currentUserId;
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Row(
-                            mainAxisAlignment: isSender
-                                ? MainAxisAlignment.end
-                                : MainAxisAlignment.start,
-                            children: [
-                              if (!isSender) ...[
-                                CircleAvatar(
-                                  radius: 12,
-                                  backgroundImage:
-                                      widget.otherUserAvatar.isNotEmpty
-                                      ? NetworkImage(widget.otherUserAvatar)
-                                      : null,
-                                ),
-                                const SizedBox(width: 8.0),
-                              ],
-                              Container(
-                                constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width * 0.7,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 12.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isSender
-                                      ? colors.primaryButton
-                                      : colors.primaryButton.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Text(
-                                  message.content,
-                                  style: TextStyle(
+        body: Column(
+          children: [
+            Expanded(
+              child: messagesAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) =>
+                    Center(child: Text('${local.t('homeError')}: $e')),
+                data: (messages) => messages.isEmpty
+                    ? Center(child: Text(local.t('homeNoMessages')))
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final message = messages[index];
+                          final isSender = message.senderId == currentUserId;
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Row(
+                              mainAxisAlignment: isSender
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
+                              children: [
+                                if (!isSender) ...[
+                                  CircleAvatar(
+                                    radius: 12,
+                                    backgroundImage:
+                                        widget.otherUserAvatar.isNotEmpty
+                                        ? NetworkImage(widget.otherUserAvatar)
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                ],
+                                Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width * 0.7,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 12.0,
+                                  ),
+                                  decoration: BoxDecoration(
                                     color: isSender
-                                        ? colors.buttonText
-                                        : colors.textPrimary,
+                                        ? colors.primaryButton
+                                        : colors.primaryButton.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Text(
+                                    message.content,
+                                    style: TextStyle(
+                                      color: isSender
+                                          ? colors.buttonText
+                                          : colors.textPrimary,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+              ),
             ),
-          ),
-          ChatInputField(conversationId: widget.conversationId),
-        ],
+            ChatInputField(conversationId: widget.conversationId),
+          ],
+        ),
       ),
     );
   }

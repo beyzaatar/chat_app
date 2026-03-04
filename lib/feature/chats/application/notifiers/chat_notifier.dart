@@ -11,8 +11,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
   ChatNotifier(this._repository) : super(const ChatState());
 
   // Konuşmaları yükle
-  Future<void> loadConversations() async {
-    state = state.copyWith(status: ChatStatus.loading);
+  Future<void> loadConversations({bool showLoading = true}) async {
+    if (showLoading) {
+      state = state.copyWith(status: ChatStatus.loading);
+    }
     try {
       final conversations = await _repository.getConversationsWithProfiles();
       state = state.copyWith(
@@ -66,6 +68,10 @@ class ChatNotifier extends StateNotifier<ChatState> {
   Future<void> markAsRead(String conversationId) async {
     try {
       await _repository.markAsRead(conversationId);
+      // Veritabanı güncellemesinin tamamlanması için kısa bir gecikme
+      await Future.delayed(const Duration(milliseconds: 300));
+      // Konuşma listesini güncelle (loading göstermeden)
+      await loadConversations(showLoading: false);
     } catch (e) {
       state = state.copyWith(
         status: ChatStatus.error,

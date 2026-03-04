@@ -10,10 +10,12 @@ class ChatCard extends StatelessWidget {
     required this.time,
     required this.press,
     this.isActive = false,
+    this.unreadCount = 0,
   });
 
   final String name, lastMessage, avatarUrl, time;
   final bool isActive;
+  final int unreadCount;
   final VoidCallback press;
 
   @override
@@ -57,7 +59,35 @@ class ChatCard extends StatelessWidget {
                 ),
               ),
             ),
-            Opacity(opacity: 0.64, child: Text(time)),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Opacity(opacity: 0.64, child: Text(time)),
+                if (unreadCount > 0) ...[
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    constraints: const BoxConstraints(minWidth: 20),
+                    child: Text(
+                      unreadCount > 99 ? '99+' : unreadCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ],
         ),
       ),
