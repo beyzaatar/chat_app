@@ -142,7 +142,9 @@ class _ContactSearchPageState extends ConsumerState<ContactSearchPage> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: colors.primaryButton.withOpacity(0.2),
+                                  color: colors.primaryButton.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(

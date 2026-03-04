@@ -1,4 +1,3 @@
-import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CircleAvatarWithActiveIndicator extends StatelessWidget {
@@ -15,8 +14,6 @@ class CircleAvatarWithActiveIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<AppColors>()!;
-
     return Stack(
       children: [
         CircleAvatar(
@@ -36,7 +33,7 @@ class CircleAvatarWithActiveIndicator extends StatelessWidget {
               height: 16,
               width: 16,
               decoration: BoxDecoration(
-                color: colors.primaryButton,
+                color: Colors.green,
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: Theme.of(context).scaffoldBackgroundColor,

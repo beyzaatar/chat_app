@@ -16,6 +16,7 @@ import 'package:chat_app/feature/entrypoint/presentation/pages/entrypoint_ui.dar
 import 'package:chat_app/feature/chats/presentation/pages/messages_page.dart';
 import 'package:chat_app/feature/profile/presentation/pages/edit_profile_page.dart';
 import 'package:chat_app/feature/settings/presentation/pages/settings_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -68,10 +69,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/messages',
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
+          final extra = state.extra as Map<String, dynamic>?;
+          if (extra == null) {
+            // If extra is null, return to entry point
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.go('/entry-point');
+            });
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
           return MessagesPage(
-            conversationId: extra['conversationId'],
-            otherUserName: extra['otherUserName'],
+            conversationId: extra['conversationId'] ?? '',
+            otherUserId: extra['otherUserId'] ?? '',
+            otherUserName: extra['otherUserName'] ?? '',
             otherUserAvatar: extra['otherUserAvatar'] ?? '',
           );
         },

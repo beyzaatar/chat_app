@@ -9,12 +9,14 @@ import '../widgets/chat_input_field.dart';
 
 class MessagesPage extends ConsumerStatefulWidget {
   final String conversationId;
+  final String otherUserId;
   final String otherUserName;
   final String otherUserAvatar;
 
   const MessagesPage({
     super.key,
     required this.conversationId,
+    required this.otherUserId,
     required this.otherUserName,
     required this.otherUserAvatar,
   });
@@ -25,11 +27,31 @@ class MessagesPage extends ConsumerStatefulWidget {
 
 class _MessagesPageState extends ConsumerState<MessagesPage> {
   bool _hasMarkedAsRead = false;
+  Map<String, dynamic>? _otherUserProfile;
 
   @override
   void initState() {
     super.initState();
     _markMessagesAsRead();
+    _loadOtherUserProfile();
+  }
+
+  Future<void> _loadOtherUserProfile() async {
+    try {
+      final profile = await Supabase.instance.client
+          .from('profiles')
+          .select()
+          .eq('id', widget.otherUserId)
+          .maybeSingle();
+
+      if (mounted) {
+        setState(() {
+          _otherUserProfile = profile;
+        });
+      }
+    } catch (e) {
+      // Profil yüklenemedi
+    }
   }
 
   void _markMessagesAsRead() {
@@ -50,7 +72,107 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
     final messagesAsync = ref.watch(
       messagesStreamProvider(widget.conversationId),
     );
+    final activeUsersAsync = ref.watch(activeUsersProvider);
+    final chatState = ref.watch(chatNotifierProvider);
     final local = AppLocalizations.of(context)!;
+
+    // Check if other user is online
+    final isOnline =
+        activeUsersAsync.whenData((users) {
+          return users.any((u) => u['user_id'] == widget.otherUserId);
+        }).value ??
+        false;
+
+    // Kullanıcı offline olduğunda profili yeniden yükle
+    ref.listen(activeUsersProvider, (previous, next) {
+      final wasOnlineBefore =
+          previous?.value?.any((u) => u['user_id'] == widget.otherUserId) ??
+          false;
+      final isOnlineNow =
+          next.value?.any((u) => u['user_id'] == widget.otherUserId) ?? false;
+
+      // Online'dan offline'a geçtiyse profili yenile
+      if (wasOnlineBefore && !isOnlineNow) {
+        _loadOtherUserProfile();
+      }
+    });
+
+    // Get last seen time from conversation profile
+    DateTime? getLastSeenTime() {
+      // Önce kendi state'imizden kontrol et
+      if (_otherUserProfile != null) {
+        final lastSeenStr = _otherUserProfile!['last_seen_at'];
+        if (lastSeenStr != null) {
+          try {
+            // UTC olarak parse et ve local time'a çevir
+            return DateTime.parse(lastSeenStr).toLocal();
+          } catch (e) {
+            return null;
+          }
+        }
+      }
+
+      // Fallback olarak conversation listesinden kontrol et
+      final conversation = chatState.conversationsWithProfiles.firstWhere((c) {
+        final otherUserId = c['participant_1'] == currentUserId
+            ? c['participant_2']
+            : c['participant_1'];
+        return otherUserId == widget.otherUserId;
+      }, orElse: () => {});
+
+      final lastSeenStr = conversation['other_user_profile']?['last_seen_at'];
+      if (lastSeenStr != null) {
+        try {
+          // UTC olarak parse et ve local time'a çevir
+          return DateTime.parse(lastSeenStr).toLocal();
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    // Get online status text
+    String getOnlineStatus() {
+      if (isOnline) {
+        return local.t('homeOnline');
+      }
+
+      final lastSeen = getLastSeenTime();
+
+      if (lastSeen != null) {
+        final difference = DateTime.now().difference(lastSeen);
+
+        // Negatif değer kontrolü (gelecek zaman olmamalı)
+        if (difference.isNegative) {
+          return '';
+        }
+
+        // 1 dakikadan az
+        if (difference.inMinutes < 1) {
+          return local.t('homeOnline'); // "Az önce" anlamında online göster
+        }
+
+        // 60 dakikadan az
+        if (difference.inMinutes < 60) {
+          return local.tp('homeMinutesAgo', {
+            'count': '${difference.inMinutes}',
+          });
+        }
+
+        // 24 saatten az
+        if (difference.inHours < 24) {
+          return local.tp('homeHoursAgo', {'count': '${difference.inHours}'});
+        }
+
+        // 7 günden az
+        if (difference.inDays < 7) {
+          return local.tp('homeDaysAgo', {'count': '${difference.inDays}'});
+        }
+      }
+
+      return '';
+    }
 
     // Mesajlar yüklendiğinde okundu işaretle
     messagesAsync.whenData((messages) {
@@ -95,9 +217,26 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
                     : null,
               ),
               const SizedBox(width: 12.0),
-              Text(
-                widget.otherUserName,
-                style: TextStyle(fontSize: 16, color: colors.buttonText),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.otherUserName.toUpperCase(),
+                      style: TextStyle(fontSize: 16, color: colors.buttonText),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (getOnlineStatus().isNotEmpty)
+                      Text(
+                        getOnlineStatus(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: colors.buttonText.withValues(alpha: 0.8),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

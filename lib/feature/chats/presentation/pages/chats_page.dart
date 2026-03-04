@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../widgets/chat_card.dart';
-import '../widgets/fill_outline_button.dart';
 
 class ChatsPage extends ConsumerStatefulWidget {
   const ChatsPage({super.key});
@@ -67,6 +66,14 @@ class _ChatsPageState extends ConsumerState<ChatsPage>
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
     final chatState = ref.watch(chatNotifierProvider);
+    final activeUsersAsync = ref.watch(activeUsersProvider);
+    final activeUserIds =
+        activeUsersAsync
+            .whenData(
+              (users) => users.map((u) => u['user_id'] as String).toSet(),
+            )
+            .value ??
+        <String>{};
     final local = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -91,24 +98,6 @@ class _ChatsPageState extends ConsumerState<ChatsPage>
       ),
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
-            color: colors.primaryButton,
-            child: Row(
-              children: [
-                FillOutlineButton(
-                  press: () {},
-                  text: local.t('homeRecentMessages'),
-                ),
-                const SizedBox(width: 16.0),
-                FillOutlineButton(
-                  press: () {},
-                  text: local.t('homeActive'),
-                  isFilled: false,
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: chatState.status == ChatStatus.loading
                 ? const Center(child: CircularProgressIndicator())
@@ -151,6 +140,12 @@ class _ChatsPageState extends ConsumerState<ChatsPage>
                             itemBuilder: (context, index) {
                               final conversation =
                                   chatState.conversationsWithProfiles[index];
+                              final otherUserId = _getOtherParticipantId(
+                                conversation,
+                              );
+                              final isUserActive = activeUserIds.contains(
+                                otherUserId,
+                              );
                               return ChatCard(
                                 name: _getOtherParticipantName(
                                   conversation,
@@ -164,11 +159,12 @@ class _ChatsPageState extends ConsumerState<ChatsPage>
                                     ? _formatTime(
                                         DateTime.parse(
                                           conversation['last_message_at'],
-                                        ),
+                                        ).toLocal(),
                                         local,
                                       )
                                     : '',
                                 unreadCount: conversation['unread_count'] ?? 0,
+                                isActive: isUserActive,
                                 press: () {
                                   context.push(
                                     '/messages',
@@ -206,12 +202,28 @@ class _ChatsPageState extends ConsumerState<ChatsPage>
   String _formatTime(DateTime dateTime, AppLocalizations local) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
+
+    // Negatif değer veya çok eski kontrolü
+    if (difference.isNegative || difference.inDays > 365) {
+      return '';
+    }
+
+    // 1 dakikadan az
+    if (difference.inMinutes < 1) {
+      return local.t('homeOnline'); // "Şimdi" anlamında
+    }
+
+    // 60 dakikadan az
     if (difference.inMinutes < 60) {
       return local.tp('homeMinutesAgo', {'count': '${difference.inMinutes}'});
     }
+
+    // 24 saatten az
     if (difference.inHours < 24) {
       return local.tp('homeHoursAgo', {'count': '${difference.inHours}'});
     }
+
+    // Her zaman için günleri göster
     return local.tp('homeDaysAgo', {'count': '${difference.inDays}'});
   }
 }
