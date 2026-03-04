@@ -1,14 +1,61 @@
 import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  Map<String, dynamic>? _userProfile;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) return;
+
+      final profile = await Supabase.instance.client
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+      if (mounted) {
+        setState(() {
+          _userProfile = profile;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final local = AppLocalizations.of(context);
+
+    final fullName = _userProfile?['full_name'] ?? local!.t('homeUser');
+    final username = _userProfile?['username'] ?? '';
+    final email = _userProfile?['email'] ?? '';
+    final avatarUrl = _userProfile?['avatar_url'] ?? '';
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
@@ -35,56 +82,57 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            ProfilePic(
-              image: "https://randomuser.me/api/portraits/women/1.jpg",
-            ),
-            Text(
-              "Annette Black",
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Divider(height: 32, color: theme.dividerColor, thickness: 1),
-            Info(infoKey: local.t('profileUserId'), info: "@annette.me"),
-            Info(infoKey: local.t('profileLocation'), info: "New York, NYC"),
-            Info(infoKey: local.t('profilePhone'), info: "(239) 555-0108"),
-            Info(
-              infoKey: local.t('profileEmailAddress'),
-              info: "demo@mail.com",
-            ),
-            const SizedBox(height: 16.0),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: 160,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    foregroundColor: theme.colorScheme.onPrimary,
-                    minimumSize: const Size(double.infinity, 48),
-                    shape: const StadiumBorder(),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  ProfilePic(
+                    image: avatarUrl.isNotEmpty
+                        ? avatarUrl
+                        : "https://ui-avatars.com/api/?name=$fullName&size=200",
                   ),
-                  onPressed: () {
-                    context.push('/edit-profile');
-                  },
-                  child: Text(
-                    local.t('profileEditProfile'),
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onPrimary,
+                  Text(
+                    fullName,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
+                  Divider(height: 32, color: theme.dividerColor, thickness: 1),
+                  if (username.isNotEmpty)
+                    Info(infoKey: local.t('profileUserId'), info: "@$username"),
+                  if (email.isNotEmpty)
+                    Info(infoKey: local.t('profileEmailAddress'), info: email),
+                  const SizedBox(height: 16.0),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: SizedBox(
+                      width: 160,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          minimumSize: const Size(double.infinity, 48),
+                          shape: const StadiumBorder(),
+                        ),
+                        onPressed: () {
+                          context.push('/edit-profile');
+                        },
+                        child: Text(
+                          local.t('profileEditProfile'),
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
