@@ -7,7 +7,7 @@ import 'package:chat_app/feature/auth/presentation/pages/login_with_email.dart';
 import 'package:chat_app/feature/auth/presentation/pages/sign_in_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/onboarding_page.dart';
 import 'package:chat_app/feature/auth/presentation/pages/verification_page.dart';
-import 'package:chat_app/feature/call/presentation/pages/audio_call_page.dart';
+import 'package:chat_app/feature/call/presentation/pages/call_page.dart';
 import 'package:chat_app/feature/call/presentation/pages/call_search_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/chats_page.dart';
 import 'package:chat_app/feature/chats/presentation/pages/message_search_page.dart';
@@ -88,8 +88,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/audio-call',
-        builder: (context, state) => const AudioCallingPage(),
+        path: '/call',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return CallPage(
+            callId: extra['callId'],
+            roomName: extra['roomName'],
+            token: extra['token'],
+            isVideo: extra['isVideo'],
+            callerName: extra['callerName'] ?? '',
+            callerImage: extra['callerImage'] ?? '',
+          );
+        },
       ),
       GoRoute(
         path: '/settings',
