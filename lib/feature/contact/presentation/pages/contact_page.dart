@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:chat_app/core/localization/app_localizations.dart';
+import 'package:chat_app/feature/call/data/call_permissions.dart';
+import 'package:chat_app/feature/call/data/services/call_service.dart';
 import 'package:chat_app/feature/chats/application/providers/chat_providers.dart';
 import 'package:chat_app/feature/chats/application/state/chat_state.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +48,61 @@ class _ContactPageState extends ConsumerState<ContactPage> {
           'otherUserAvatar': otherUserAvatar,
         },
       );
+    }
+  }
+
+  final _callService = CallService();
+
+  Future<void> _startCall(
+    BuildContext context, {
+    required String calleeId,
+    required String calleeName,
+    required String calleeAvatar,
+    required bool isVideo,
+  }) async {
+    // İzin kontrolü
+    final hasPermission = await requestCallPermissions(isVideo);
+    if (!hasPermission) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Mikrofon/kamera izni gerekiyor')),
+        );
+      }
+      return;
+    }
+
+    try {
+      // Aramayı başlat
+      final call = await _callService.initiateCall(
+        calleeId: calleeId,
+        type: isVideo ? CallType.video : CallType.audio,
+      );
+
+      // Token al
+      final token = await _callService.getLiveKitToken(
+        roomName: call['room_name'],
+        callId: call['id'],
+      );
+
+      if (mounted) {
+        context.push(
+          '/call',
+          extra: {
+            'callId': call['id'],
+            'roomName': call['room_name'],
+            'token': token,
+            'isVideo': isVideo,
+            'callerName': calleeName,
+            'callerImage': calleeAvatar,
+          },
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Arama başlatılamadı: $e')));
+      }
     }
   }
 
@@ -98,6 +155,33 @@ class _ContactPageState extends ConsumerState<ContactPage> {
                   subtitle: Text('@$username'),
                   onTap: () =>
                       _startConversation(user['id'], fullName, avatarUrl),
+
+                  // ← Bunu ekleyin
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.call, color: colors.primaryButton),
+                        onPressed: () => _startCall(
+                          context,
+                          calleeId: user['id'],
+                          calleeName: fullName,
+                          calleeAvatar: avatarUrl,
+                          isVideo: false,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.videocam, color: colors.primaryButton),
+                        onPressed: () => _startCall(
+                          context,
+                          calleeId: user['id'],
+                          calleeName: fullName,
+                          calleeAvatar: avatarUrl,
+                          isVideo: true,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

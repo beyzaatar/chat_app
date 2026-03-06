@@ -70,10 +70,26 @@ class CallService {
     required String roomName,
     required String callId,
   }) async {
+    // Session'ı yenile
+    await _supabase.auth.refreshSession();
+    final session = _supabase.auth.currentSession;
+
+    if (session == null) throw Exception('Oturum bulunamadı');
+
+    print('🔑 Access token: ${session.accessToken.substring(0, 20)}...');
+
     final response = await _supabase.functions.invoke(
       'livekit-token',
       body: {'roomName': roomName, 'callId': callId},
+      headers: {'Authorization': 'Bearer ${session.accessToken}'},
     );
+
+    print('📡 Response status: ${response.status}');
+    print('📡 Response data: ${response.data}');
+
+    if (response.status != 200)
+      throw Exception('Token alınamadı: ${response.data}');
+
     return response.data['token'] as String;
   }
 

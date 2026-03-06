@@ -49,10 +49,7 @@ class _CallPageState extends State<CallPage> {
     _room = Room();
     _room.addListener(() => setState(() {}));
 
-    await _room.connect(
-      'wss://SIZIN_LIVEKIT_URL_INIZ.livekit.cloud', // ← kendi URL'nizi yazın
-      widget.token,
-    );
+    await _room.connect('wss://chat-app-betf1ib9.livekit.cloud', widget.token);
 
     await _room.localParticipant?.setMicrophoneEnabled(true);
     if (widget.isVideo) {
