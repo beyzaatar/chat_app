@@ -2,6 +2,7 @@ import 'package:chat_app/app/router.dart';
 import 'package:chat_app/core/localization/localization.dart';
 import 'package:chat_app/core/themes/app_theme_provider.dart';
 import 'package:chat_app/core/themes/app_themes.dart';
+import 'package:chat_app/feature/call/presentation/widgets/floating_call_bar.dart';
 import 'package:chat_app/feature/call/presentation/widgets/incoming_call_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,8 +22,9 @@ class App extends ConsumerWidget {
       routerConfig: router,
       title: 'Chat App',
 
-      builder: (context, child) =>
-          IncomingCallHandler(child: child ?? const SizedBox()),
+      builder: (context, child) => IncomingCallHandler(
+        child: FloatingCallBar(child: child ?? const SizedBox()),
+      ),
 
       // LOCALIZATION
       locale: currentLocale,
