@@ -90,11 +90,12 @@ class CallHistoryCard extends StatelessWidget {
     required this.isActive,
     required this.isVideoCall,
     required this.isOutgoingCall,
-    required this.image,
+    this.image,
     required this.press,
   });
 
-  final String name, time, image;
+  final String name, time;
+  final String? image;
   final bool isActive, isVideoCall, isOutgoingCall;
   final VoidCallback press;
 
@@ -154,7 +155,15 @@ class CircleAvatarWithActiveIndicator extends StatelessWidget {
 
     return Stack(
       children: [
-        CircleAvatar(radius: radius, backgroundImage: NetworkImage(image!)),
+        CircleAvatar(
+          radius: radius,
+          backgroundImage: (image != null && image!.isNotEmpty)
+              ? NetworkImage(image!)
+              : null,
+          child: (image == null || image!.isEmpty)
+              ? Icon(Icons.person, size: radius, color: colors.buttonText)
+              : null,
+        ),
         if (isActive!)
           Positioned(
             right: 0,

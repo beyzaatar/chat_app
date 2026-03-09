@@ -164,4 +164,13 @@ class CallService {
       return [];
     }
   }
+
+  Future<String> getCallStatus(String callId) async {
+    final data = await _supabase
+        .from('calls')
+        .select('status')
+        .eq('id', callId)
+        .single();
+    return data['status'] as String;
+  }
 }

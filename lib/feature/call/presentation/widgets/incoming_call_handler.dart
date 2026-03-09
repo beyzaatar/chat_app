@@ -47,47 +47,66 @@ class _IncomingCallHandlerState extends ConsumerState<IncomingCallHandler> {
       return;
     }
 
+    late BuildContext dialogContext;
+
     showDialog(
-      context: navigatorState.context, // ← context yerine bunu kullan
+      context: navigatorState.context,
       barrierDismissible: false,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Gelen Arama'),
-        content: Text(
-          '${call['call_type'] == 'video' ? '📹 Görüntülü' : '📞 Sesli'} arama geliyor...',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              await _callService.rejectCall(call['id']);
-            },
-            child: const Text('Reddet', style: TextStyle(color: Colors.red)),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              await _callService.acceptCall(call['id']);
-              final token = await _callService.getLiveKitToken(
-                roomName: call['room_name'],
-                callId: call['id'],
-              );
-              router.push(
-                '/call',
-                extra: {
-                  'callId': call['id'],
-                  'roomName': call['room_name'],
-                  'token': token,
-                  'isVideo': call['call_type'] == 'video',
-                  'callerName': call['caller_name'] ?? '',
-                  'callerImage': call['caller_image'] ?? '',
+      builder: (context) {
+        dialogContext = context;
+        return PopScope(
+          canPop: false, // geri tuşunu engelle
+          child: AlertDialog(
+            title: const Text('Gelen Arama'),
+            content: Text(
+              '${call['call_type'] == 'video' ? '📹 Görüntülü' : '📞 Sesli'} arama geliyor...',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(dialogContext);
+                  _activeCallId = null;
+                  await _callService.rejectCall(call['id']);
                 },
-              );
-            },
-            child: const Text('Kabul Et'),
+                child: const Text('Reddet', style: TextStyle(color: Colors.red)),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(dialogContext);
+                  _activeCallId = null;
+                  await _callService.acceptCall(call['id']);
+                  final token = await _callService.getLiveKitToken(
+                    roomName: call['room_name'],
+                    callId: call['id'],
+                  );
+                  router.push(
+                    '/call',
+                    extra: {
+                      'callId': call['id'],
+                      'roomName': call['room_name'],
+                      'token': token,
+                      'isVideo': call['call_type'] == 'video',
+                      'callerName': '',
+                      'callerImage': '',
+                    },
+                  );
+                },
+                child: const Text('Kabul Et'),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
+    // Arama durumunu dinle — ended/rejected gelirse dialogu kapat
+    _callService.listenCallStatus(call['id']).listen((status) {
+      if (status == 'ended' || status == 'rejected') {
+        if (dialogContext.mounted) {
+          Navigator.of(dialogContext).pop();
+          _activeCallId = null;
+        }
+      }
+    });
   }
 
   @override

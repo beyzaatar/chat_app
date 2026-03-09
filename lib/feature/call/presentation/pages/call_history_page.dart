@@ -41,6 +41,62 @@ class _CallHistoryPageState extends State<CallHistoryPage> {
     }
   }
 
+  Future<void> _startCall({
+    required String calleeId,
+    required String calleeName,
+    required String? calleeAvatar,
+    required bool isVideo,
+  }) async {
+    final hasPermission = await requestCallPermissions(isVideo);
+    if (!hasPermission) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Mikrofon/kamera izni gerekiyor')),
+        );
+      }
+      return;
+    }
+
+    try {
+      final call = await _callService.initiateCall(
+        calleeId: calleeId,
+        type: isVideo ? CallType.video : CallType.audio,
+      );
+
+      // 30 saniye sonra cevap gelmezse missed yap
+      Future.delayed(const Duration(seconds: 30), () async {
+        final status = await _callService.getCallStatus(call['id']);
+        if (status == 'ringing') {
+          await _callService.endCall(call['id']);
+        }
+      });
+
+      final token = await _callService.getLiveKitToken(
+        roomName: call['room_name'],
+        callId: call['id'],
+      );
+      if (mounted) {
+        context.push(
+          '/call',
+          extra: {
+            'callId': call['id'],
+            'roomName': call['room_name'],
+            'token': token,
+            'isVideo': isVideo,
+            'callerName': calleeName,
+            'callerImage': calleeAvatar,
+          },
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Arama başlatılamadı: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
@@ -78,50 +134,26 @@ class _CallHistoryPageState extends State<CallHistoryPage> {
                     final call = _calls[index];
                     final isOutgoing = call['caller_id'] == currentUserId;
                     final other = isOutgoing ? call['callee'] : call['caller'];
-                    //final otherEmail = other?['email'] ?? 'Bilinmeyen';
+                    final fullName =
+                        other?['full_name'] ??
+                        other?['username'] ??
+                        other?['email'] ??
+                        'Bilinmeyen';
+                    final avatarUrl = other?['avatar_url'];
 
                     return CallHistoryCard(
-                      name: other?['full_name'] ?? 'Bilinmeyen',
-                      image:
-                          other?['avatar_url'] ??
-                          'https://randomuser.me/api/portraits/women/1.jpg',
+                      name: fullName,
+                      image: avatarUrl,
                       time: _formatTime(call['created_at']),
                       isActive: false,
                       isOutgoingCall: isOutgoing,
                       isVideoCall: call['call_type'] == 'video',
-                      press: () async {
-                        // Arama başlat
-                        final hasPermission = await requestCallPermissions(
-                          call['call_type'] == 'video',
-                        );
-                        if (!hasPermission) return;
-
-                        final newCall = await _callService.initiateCall(
-                          calleeId: other['id'],
-                          type: call['call_type'] == 'video'
-                              ? CallType.video
-                              : CallType.audio,
-                        );
-                        final token = await _callService.getLiveKitToken(
-                          roomName: newCall['room_name'],
-                          callId: newCall['id'],
-                        );
-                        if (mounted) {
-                          this.context.push(
-                            '/call',
-                            extra: {
-                              'callId': newCall['id'],
-                              'roomName': newCall['room_name'],
-                              'token': token,
-                              'isVideo': call['call_type'] == 'video',
-                              'callerName': other?['full_name'] ?? 'Bilinmeyen',
-                              'callerImage':
-                                  other?['avatar_url'] ??
-                                  'https://randomuser.me/api/portraits/women/1.jpg',
-                            },
-                          );
-                        }
-                      },
+                      press: () => _startCall(
+                        calleeId: other?['id'] ?? '',
+                        calleeName: fullName,
+                        calleeAvatar: avatarUrl,
+                        isVideo: call['call_type'] == 'video',
+                      ),
                     );
                   },
                 ),
