@@ -1,9 +1,111 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:chat_app/core/localization/app_localizations.dart';
+import 'package:chat_app/feature/call/data/call_permissions.dart';
+import 'package:chat_app/feature/call/data/services/call_service.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class CallSearchPage extends StatelessWidget {
+class CallSearchPage extends StatefulWidget {
   const CallSearchPage({super.key});
+
+  @override
+  State<CallSearchPage> createState() => _CallSearchPageState();
+}
+
+class _CallSearchPageState extends State<CallSearchPage> {
+  final _callService = CallService();
+  final _searchController = TextEditingController();
+  List<Map<String, dynamic>> _allCalls = [];
+  List<Map<String, dynamic>> _filtered = [];
+  bool _loading = true;
+  late String _currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUserId = _callService.currentUserId;
+    _loadCalls();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadCalls() async {
+    final calls = await _callService.getCallHistory();
+    setState(() {
+      _allCalls = calls;
+      _filtered = calls;
+      _loading = false;
+    });
+  }
+
+  void _onSearch(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        _filtered = _allCalls;
+      } else {
+        _filtered = _allCalls.where((call) {
+          final isOutgoing = call['caller_id'] == _currentUserId;
+          final other = isOutgoing ? call['callee'] : call['caller'];
+          final fullName = (other?['full_name'] ?? '').toLowerCase();
+          final username = (other?['username'] ?? '').toLowerCase();
+          final email = (other?['email'] ?? '').toLowerCase();
+          return fullName.contains(query.toLowerCase()) ||
+              username.contains(query.toLowerCase()) ||
+              email.contains(query.toLowerCase());
+        }).toList();
+      }
+    });
+  }
+
+  Future<void> _startCall({
+    required String calleeId,
+    required String calleeName,
+    required String calleeAvatar,
+    required bool isVideo,
+  }) async {
+    final hasPermission = await requestCallPermissions(isVideo);
+    if (!hasPermission) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Mikrofon/kamera izni gerekiyor')),
+        );
+      }
+      return;
+    }
+    try {
+      final call = await _callService.initiateCall(
+        calleeId: calleeId,
+        type: isVideo ? CallType.video : CallType.audio,
+      );
+      final token = await _callService.getLiveKitToken(
+        roomName: call['room_name'],
+        callId: call['id'],
+      );
+      if (mounted) {
+        context.push(
+          '/call',
+          extra: {
+            'callId': call['id'],
+            'roomName': call['room_name'],
+            'token': token,
+            'isVideo': isVideo,
+            'callerName': calleeName,
+            'callerImage': calleeAvatar,
+          },
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Arama başlatılamadı: $e')));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,60 +127,88 @@ class CallSearchPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Appbar search
           Container(
             margin: const EdgeInsets.only(bottom: 16.0),
             padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
             color: colors.primaryButton,
-            child: Form(
-              child: TextFormField(
-                autofocus: true,
-                textInputAction: TextInputAction.search,
-                onChanged: (value) {
-                  // search
-                },
-                decoration: InputDecoration(
-                  fillColor: colors.buttonText,
-                  prefixIcon: Icon(Icons.search, color: colors.placeholder),
-                  hintText: local.t('homeSearch'),
-                  hintStyle: TextStyle(color: colors.placeholder),
-                  filled: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16.0 * 1.5,
-                    vertical: 16.0,
-                  ),
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
-                  ),
+            child: TextFormField(
+              controller: _searchController,
+              autofocus: true,
+              textInputAction: TextInputAction.search,
+              onChanged: _onSearch,
+              decoration: InputDecoration(
+                fillColor: colors.buttonText,
+                prefixIcon: Icon(Icons.search, color: colors.placeholder),
+                hintText: local.t('homeSearch'),
+                hintStyle: TextStyle(color: colors.placeholder),
+                filled: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 16.0,
+                ),
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
                 ),
               ),
             ),
           ),
           Expanded(
-            child: SafeArea(
-              child: ListView(
-                children: [
-                  // For demo
-                  ...List.generate(
-                    demoContactsImage.length,
-                    (index) => CallHistoryCard(
-                      name: "Darlene Robert",
-                      image: demoContactsImage[index],
-                      time: local.t('homeMinutesAgo'),
-                      isActive: index.isEven,
-                      isOutgoingCall: index.isOdd,
-                      isVideoCall: index.isEven,
-                      press: () {},
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _filtered.isEmpty
+                ? Center(
+                    child: Text(
+                      'Sonuç bulunamadı',
+                      style: TextStyle(color: colors.textSecondary),
+                    ),
+                  )
+                : SafeArea(
+                    child: ListView.builder(
+                      itemCount: _filtered.length,
+                      itemBuilder: (context, index) {
+                        final call = _filtered[index];
+                        final isOutgoing = call['caller_id'] == _currentUserId;
+                        final other = isOutgoing
+                            ? call['callee']
+                            : call['caller'];
+                        final fullName =
+                            other?['full_name'] ??
+                            other?['username'] ??
+                            other?['email'] ??
+                            'Bilinmeyen';
+                        final avatarUrl = other?['avatar_url'] ?? '';
+
+                        return CallHistoryCard(
+                          name: fullName,
+                          image: avatarUrl.isNotEmpty ? avatarUrl : null,
+                          time: _formatTime(call['created_at']),
+                          isActive: false,
+                          isOutgoingCall: isOutgoing,
+                          isVideoCall: call['call_type'] == 'video',
+                          press: () => _startCall(
+                            calleeId: other?['id'] ?? '',
+                            calleeName: fullName,
+                            calleeAvatar: avatarUrl,
+                            isVideo: call['call_type'] == 'video',
+                          ),
+                        );
+                      },
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
     );
+  }
+
+  String _formatTime(String? isoDate) {
+    if (isoDate == null) return '';
+    final date = DateTime.parse(isoDate);
+    final diff = DateTime.now().difference(date);
+    if (diff.inMinutes < 60) return '${diff.inMinutes} dk önce';
+    if (diff.inHours < 24) return '${diff.inHours} saat önce';
+    return '${diff.inDays} gün önce';
   }
 }
 

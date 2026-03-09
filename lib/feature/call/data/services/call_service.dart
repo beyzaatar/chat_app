@@ -9,7 +9,7 @@ class CallService {
   final _supabase = Supabase.instance.client;
   final _uuid = const Uuid();
 
-  String get _currentUserId => _supabase.auth.currentUser!.id;
+  String get currentUserId => _supabase.auth.currentUser!.id;
 
   // Arama başlat
   Future<Map<String, dynamic>> initiateCall({
@@ -21,7 +21,7 @@ class CallService {
     final call = await _supabase
         .from('calls')
         .insert({
-          'caller_id': _currentUserId,
+          'caller_id': currentUserId,
           'callee_id': calleeId,
           'call_type': type.name,
           'room_name': roomName,
@@ -97,7 +97,7 @@ class CallService {
 
   // Gelen aramaları dinle
   Stream<Map<String, dynamic>?> listenForIncomingCalls() {
-    log('👂 Dinleme başladı, user: $_currentUserId');
+    log('👂 Dinleme başladı, user: $currentUserId');
 
     DateTime.now().subtract(const Duration(seconds: 30)).toIso8601String();
 
@@ -116,7 +116,7 @@ class CallService {
       final ringing = rows
           .where(
             (r) =>
-                r['callee_id'] == _currentUserId &&
+                r['callee_id'] == currentUserId &&
                 r['status'] == 'ringing' &&
                 r['created_at'] != null &&
                 DateTime.now()
@@ -126,7 +126,7 @@ class CallService {
           )
           .toList();
 
-      log('📲 Ringing kayıt: ${ringing.length}, currentUser: $_currentUserId');
+      log('📲 Ringing kayıt: ${ringing.length}, currentUser: $currentUserId');
       return ringing.isNotEmpty ? ringing.first : null;
     });
   }
@@ -152,7 +152,7 @@ class CallService {
       caller:caller_id(id, full_name, username, email, avatar_url),
       callee:callee_id(id, full_name, username, email, avatar_url)
     ''')
-          .or('caller_id.eq.$_currentUserId,callee_id.eq.$_currentUserId')
+          .or('caller_id.eq.$currentUserId,callee_id.eq.$currentUserId')
           .neq('status', 'ringing')
           .order('created_at', ascending: false)
           .limit(50);
