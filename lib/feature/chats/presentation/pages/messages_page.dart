@@ -1,5 +1,7 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:chat_app/core/localization/app_localizations.dart';
+import 'package:chat_app/feature/call/data/call_permissions.dart';
+import 'package:chat_app/feature/call/data/services/call_service.dart';
 import 'package:chat_app/feature/chats/application/providers/chat_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,6 +30,51 @@ class MessagesPage extends ConsumerStatefulWidget {
 class _MessagesPageState extends ConsumerState<MessagesPage> {
   bool _hasMarkedAsRead = false;
   Map<String, dynamic>? _otherUserProfile;
+  final _callService = CallService();
+
+  Future<void> _startCall({required bool isVideo}) async {
+    final hasPermission = await requestCallPermissions(isVideo);
+    if (!hasPermission) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Mikrofon/kamera izni gerekiyor')),
+        );
+      }
+      return;
+    }
+
+    try {
+      final call = await _callService.initiateCall(
+        calleeId: widget.otherUserId,
+        type: isVideo ? CallType.video : CallType.audio,
+      );
+
+      final token = await _callService.getLiveKitToken(
+        roomName: call['room_name'],
+        callId: call['id'],
+      );
+
+      if (mounted) {
+        context.push(
+          '/call',
+          extra: {
+            'callId': call['id'],
+            'roomName': call['room_name'],
+            'token': token,
+            'isVideo': isVideo,
+            'callerName': widget.otherUserName,
+            'callerImage': widget.otherUserAvatar,
+          },
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Arama başlatılamadı: $e')));
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -243,11 +290,11 @@ class _MessagesPageState extends ConsumerState<MessagesPage> {
           actions: [
             IconButton(
               icon: Icon(Icons.local_phone, color: colors.buttonText),
-              onPressed: () => context.push("/audio-call"),
+              onPressed: () => _startCall(isVideo: false),
             ),
             IconButton(
               icon: Icon(Icons.videocam, color: colors.buttonText),
-              onPressed: () {},
+              onPressed: () => _startCall(isVideo: true),
             ),
             const SizedBox(width: 8.0),
           ],

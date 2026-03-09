@@ -27,7 +27,10 @@ class ContactCard extends StatelessWidget {
         isActive: isActive,
         radius: 28,
       ),
-      title: Text(name, style: Theme.of(context).textTheme.titleMedium),
+      title: Text(
+        name.toUpperCase(),
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Text(
