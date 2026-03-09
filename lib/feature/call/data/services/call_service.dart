@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -76,7 +77,7 @@ class CallService {
 
     if (session == null) throw Exception('Oturum bulunamadı');
 
-    print('🔑 Access token: ${session.accessToken.substring(0, 20)}...');
+    log('🔑 Access token: ${session.accessToken.substring(0, 20)}...');
 
     final response = await _supabase.functions.invoke(
       'livekit-token',
@@ -84,25 +85,50 @@ class CallService {
       headers: {'Authorization': 'Bearer ${session.accessToken}'},
     );
 
-    print('📡 Response status: ${response.status}');
-    print('📡 Response data: ${response.data}');
+    log('📡 Response status: ${response.status}');
+    log('📡 Response data: ${response.data}');
 
-    if (response.status != 200)
+    if (response.status != 200) {
       throw Exception('Token alınamadı: ${response.data}');
+    }
 
     return response.data['token'] as String;
   }
 
   // Gelen aramaları dinle
   Stream<Map<String, dynamic>?> listenForIncomingCalls() {
-    return _supabase
-        .from('calls')
-        .stream(primaryKey: ['id'])
-        .eq('callee_id', _currentUserId)
-        .map((rows) {
-          final ringing = rows.where((r) => r['status'] == 'ringing').toList();
-          return ringing.isNotEmpty ? ringing.first : null;
-        });
+    log('👂 Dinleme başladı, user: $_currentUserId');
+
+    DateTime.now().subtract(const Duration(seconds: 30)).toIso8601String();
+
+    return _supabase.from('calls').stream(primaryKey: ['id'])
+    // ← .eq() kaldırıldı, Dart tarafında filtreleriz
+    .map((rows) {
+      log('📊 Stream güncellendi, toplam kayıt: ${rows.length}');
+
+      // Tüm kayıtları yazdır
+      for (final r in rows) {
+        log(
+          '  ID: ${r['id']} | callee: ${r['callee_id']} | status: ${r['status']}',
+        );
+      }
+
+      final ringing = rows
+          .where(
+            (r) =>
+                r['callee_id'] == _currentUserId &&
+                r['status'] == 'ringing' &&
+                r['created_at'] != null &&
+                DateTime.now()
+                        .difference(DateTime.parse(r['created_at']))
+                        .inSeconds <
+                    30,
+          )
+          .toList();
+
+      log('📲 Ringing kayıt: ${ringing.length}, currentUser: $_currentUserId');
+      return ringing.isNotEmpty ? ringing.first : null;
+    });
   }
 
   // Aramanın durumunu dinle
@@ -121,16 +147,20 @@ class CallService {
     try {
       final data = await _supabase
           .from('calls')
-          .select('*')
+          .select('''
+      *,
+      caller:caller_id(id, full_name, username, email, avatar_url),
+      callee:callee_id(id, full_name, username, email, avatar_url)
+    ''')
           .or('caller_id.eq.$_currentUserId,callee_id.eq.$_currentUserId')
           .neq('status', 'ringing')
           .order('created_at', ascending: false)
           .limit(50);
 
-      print('📞 Gelen veri: $data');
+      log('📞 Gelen veri: $data');
       return List<Map<String, dynamic>>.from(data);
     } catch (e) {
-      print('❌ Hata: $e');
+      log('❌ Hata: $e');
       return [];
     }
   }

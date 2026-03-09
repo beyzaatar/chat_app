@@ -64,7 +64,7 @@ class _ContactPageState extends ConsumerState<ContactPage> {
     final hasPermission = await requestCallPermissions(isVideo);
     if (!hasPermission) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(this.context).showSnackBar(
           const SnackBar(content: Text('Mikrofon/kamera izni gerekiyor')),
         );
       }
@@ -85,7 +85,7 @@ class _ContactPageState extends ConsumerState<ContactPage> {
       );
 
       if (mounted) {
-        context.push(
+        this.context.push(
           '/call',
           extra: {
             'callId': call['id'],
@@ -100,7 +100,7 @@ class _ContactPageState extends ConsumerState<ContactPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
-          context,
+          this.context,
         ).showSnackBar(SnackBar(content: Text('Arama başlatılamadı: $e')));
       }
     }

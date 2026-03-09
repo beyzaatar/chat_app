@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:chat_app/core/localization/app_localizations.dart';
 import 'package:chat_app/feature/call/data/call_permissions.dart';
@@ -28,13 +30,13 @@ class _CallHistoryPageState extends State<CallHistoryPage> {
   Future<void> _loadCalls() async {
     try {
       final calls = await _callService.getCallHistory();
-      print('📋 Call sayısı: ${calls.length}');
+      log('📋 Call sayısı: ${calls.length}');
       setState(() {
         _calls = calls;
         _loading = false;
       });
     } catch (e) {
-      print('❌ _loadCalls hata: $e');
+      log('❌ _loadCalls hata: $e');
       setState(() => _loading = false);
     }
   }
@@ -76,11 +78,13 @@ class _CallHistoryPageState extends State<CallHistoryPage> {
                     final call = _calls[index];
                     final isOutgoing = call['caller_id'] == currentUserId;
                     final other = isOutgoing ? call['callee'] : call['caller'];
-                    final otherEmail = other?['email'] ?? 'Bilinmeyen';
+                    //final otherEmail = other?['email'] ?? 'Bilinmeyen';
 
                     return CallHistoryCard(
-                      name: otherEmail,
-                      image: 'https://randomuser.me/api/portraits/women/1.jpg',
+                      name: other?['full_name'] ?? 'Bilinmeyen',
+                      image:
+                          other?['avatar_url'] ??
+                          'https://randomuser.me/api/portraits/women/1.jpg',
                       time: _formatTime(call['created_at']),
                       isActive: false,
                       isOutgoingCall: isOutgoing,
@@ -110,7 +114,10 @@ class _CallHistoryPageState extends State<CallHistoryPage> {
                               'roomName': newCall['room_name'],
                               'token': token,
                               'isVideo': call['call_type'] == 'video',
-                              'callerName': otherEmail,
+                              'callerName': other?['full_name'] ?? 'Bilinmeyen',
+                              'callerImage':
+                                  other?['avatar_url'] ??
+                                  'https://randomuser.me/api/portraits/women/1.jpg',
                             },
                           );
                         }

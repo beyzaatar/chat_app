@@ -2,6 +2,7 @@ import 'package:chat_app/app/router.dart';
 import 'package:chat_app/core/localization/localization.dart';
 import 'package:chat_app/core/themes/app_theme_provider.dart';
 import 'package:chat_app/core/themes/app_themes.dart';
+import 'package:chat_app/feature/call/presentation/widgets/incoming_call_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +20,9 @@ class App extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       title: 'Chat App',
+
+      builder: (context, child) =>
+          IncomingCallHandler(child: child ?? const SizedBox()),
 
       // LOCALIZATION
       locale: currentLocale,

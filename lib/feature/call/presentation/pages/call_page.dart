@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:chat_app/feature/call/data/services/call_service.dart';
 import 'package:chat_app/feature/call/presentation/widgets/call_bg.dart';
 import 'package:chat_app/feature/call/presentation/widgets/call_option.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:livekit_client/livekit_client.dart';
 
 class CallPage extends StatefulWidget {
@@ -46,28 +48,46 @@ class _CallPageState extends State<CallPage> {
   }
 
   Future<void> _connectToRoom() async {
-    _room = Room();
-    _room.addListener(() => setState(() {}));
+    try {
+      _room = Room();
+      _room.addListener(() => setState(() {}));
 
-    await _room.connect('wss://chat-app-betf1ib9.livekit.cloud', widget.token);
+      await _room.connect(
+        'wss://chat-app-betf1ib9.livekit.cloud',
+        widget.token,
+      );
 
-    await _room.localParticipant?.setMicrophoneEnabled(true);
-    if (widget.isVideo) {
-      await _room.localParticipant?.setCameraEnabled(true);
+      await _room.localParticipant?.setMicrophoneEnabled(true);
+      if (widget.isVideo) {
+        await _room.localParticipant?.setCameraEnabled(true);
+      }
+
+      setState(() => _isConnected = true);
+    } catch (e) {
+      log('❌ Room bağlantı hatası: $e');
+      // Hata olsa bile kapatma butonu çalışsın
+      setState(() => _isConnected = true);
     }
-
-    setState(() => _isConnected = true);
   }
 
   void _listenForCallEnd() {
     _statusSub = _callService.listenCallStatus(widget.callId).listen((status) {
+      log('📞 Call status: $status');
       if (status == 'ended' || status == 'rejected') _leaveRoom();
     });
   }
 
   Future<void> _leaveRoom() async {
-    await _room.disconnect();
-    if (mounted) Navigator.of(context).pop();
+    try {
+      await _room.disconnect();
+    } catch (_) {}
+    if (mounted) {
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go('/entry-point');
+      }
+    }
   }
 
   Future<void> _endCall() async {
