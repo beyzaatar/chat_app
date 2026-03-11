@@ -1,15 +1,28 @@
 import 'package:chat_app/core/constants/app_colors.dart';
+import 'package:chat_app/feature/chats/data/models/message_model.dart';
 import 'package:flutter/material.dart';
-import '../../../messages/data/models/message_model.dart';
+
+enum MessageStatus { notSent, notView, viewed }
 
 class MessageStatusDot extends StatelessWidget {
-  final MessageStatus? status;
+  final MessageModel message;
+  final bool isSender;
 
-  const MessageStatusDot({super.key, this.status});
+  const MessageStatusDot({
+    super.key,
+    required this.message,
+    required this.isSender,
+  });
+
+  MessageStatus get _status {
+    if (message.isRead) return MessageStatus.viewed;
+    return MessageStatus.notView;
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppColors>()!;
+
     Color dotColor(MessageStatus status) {
       switch (status) {
         case MessageStatus.notSent:
@@ -21,12 +34,14 @@ class MessageStatusDot extends StatelessWidget {
       }
     }
 
+    final status = _status;
+
     return Container(
       margin: const EdgeInsets.only(left: 16.0 / 2),
       height: 18,
       width: 18,
       decoration: BoxDecoration(
-        color: dotColor(status!),
+        color: dotColor(status),
         shape: BoxShape.circle,
       ),
       child: Icon(

@@ -1,11 +1,10 @@
 import 'package:chat_app/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import '../../../messages/data/models/message_model.dart';
 
 class AudioMessage extends StatelessWidget {
-  final ChatMessage? message;
+  final bool isSender;
 
-  const AudioMessage({super.key, this.message});
+  const AudioMessage({super.key, required this.isSender});
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +17,13 @@ class AudioMessage extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        color: colors.primaryButton.withValues(
-          alpha: message!.isSender ? 1 : 0.1,
-        ),
+        color: colors.primaryButton.withValues(alpha: isSender ? 1 : 0.1),
       ),
       child: Row(
         children: [
           Icon(
             Icons.play_arrow,
-            color: message!.isSender ? colors.buttonText : colors.primaryButton,
+            color: isSender ? colors.buttonText : colors.primaryButton,
           ),
           Expanded(
             child: Padding(
@@ -38,7 +35,7 @@ class AudioMessage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     height: 2,
-                    color: message!.isSender
+                    color: isSender
                         ? colors.scaffoldBackground
                         : colors.primaryButton.withValues(alpha: 0.4),
                   ),
@@ -48,7 +45,7 @@ class AudioMessage extends StatelessWidget {
                       height: 8,
                       width: 8,
                       decoration: BoxDecoration(
-                        color: message!.isSender
+                        color: isSender
                             ? colors.scaffoldBackground
                             : colors.primaryButton,
                         shape: BoxShape.circle,
@@ -63,7 +60,7 @@ class AudioMessage extends StatelessWidget {
             "0.37",
             style: TextStyle(
               fontSize: 12,
-              color: message!.isSender ? colors.buttonText : null,
+              color: isSender ? colors.buttonText : null,
             ),
           ),
         ],

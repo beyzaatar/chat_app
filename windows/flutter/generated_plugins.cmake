@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_webrtc
   livekit_client
   permission_handler_windows
+  record_windows
   url_launcher_windows
 )
 

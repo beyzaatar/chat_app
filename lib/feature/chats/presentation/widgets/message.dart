@@ -1,38 +1,30 @@
+import 'package:chat_app/feature/chats/data/models/message_model.dart';
 import 'package:flutter/material.dart';
-import '../../../messages/data/models/message_model.dart';
-import 'text_message.dart';
-import 'audio_message.dart';
-import 'video_message.dart';
 import 'message_status_dot.dart';
+import 'text_message.dart';
 
 class Message extends StatelessWidget {
-  const Message({super.key, required this.message});
+  const Message({
+    super.key,
+    required this.message,
+    required this.currentUserId,
+  });
 
-  final ChatMessage message;
+  final MessageModel message;
+  final String currentUserId;
+
+  bool get isSender => message.senderId == currentUserId;
 
   @override
   Widget build(BuildContext context) {
-    Widget messageContaint(ChatMessage message) {
-      switch (message.messageType) {
-        case ChatMessageType.text:
-          return TextMessage(message: message);
-        case ChatMessageType.audio:
-          return AudioMessage(message: message);
-        case ChatMessageType.video:
-          return const VideoMessage();
-        default:
-          return const SizedBox();
-      }
-    }
-
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Row(
-        mainAxisAlignment: message.isSender
+        mainAxisAlignment: isSender
             ? MainAxisAlignment.end
             : MainAxisAlignment.start,
         children: [
-          if (!message.isSender) ...[
+          if (!isSender) ...[
             const CircleAvatar(
               radius: 12,
               backgroundImage: NetworkImage(
@@ -41,8 +33,8 @@ class Message extends StatelessWidget {
             ),
             const SizedBox(width: 16.0 / 2),
           ],
-          messageContaint(message),
-          if (message.isSender) MessageStatusDot(status: message.messageStatus),
+          TextMessage(message: message, isSender: isSender),
+          if (isSender) MessageStatusDot(message: message, isSender: isSender),
         ],
       ),
     );
